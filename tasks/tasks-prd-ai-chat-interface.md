@@ -58,14 +58,14 @@
   - [x] 1.6 Create utility functions for streaming text, search, and common operations
   - [x] 1.7 Set up custom hooks structure for state management (useChat, useProjects, useTheme, useKeyboardShortcuts)
 
-- [ ] 2.0 Implement Layout and Navigation System
-  - [ ] 2.1 Create TopNavigation component with Script logo, upgrade button (⚡ icon), and user profile icon
-  - [ ] 2.2 Build LeftSidebar component with search bar, navigation menu items, and user profile preview
-  - [ ] 2.3 Implement RightSidebar component with project list, "New Project" option, and load more functionality
-  - [ ] 2.4 Add collapsible functionality to both sidebars with smooth animations
-  - [ ] 2.5 Create UserProfilePopover component with avatar, name, email, and menu options (Settings, Logout, Edit Profile)
-  - [ ] 2.6 Implement responsive layout that adapts to different screen sizes (desktop, tablet, mobile)
-  - [ ] 2.7 Add light/dark mode toggle at bottom of left sidebar with theme persistence
+- [x] 2.0 Implement Layout and Navigation System
+  - [x] 2.1 Create TopNavigation component with Script logo, upgrade button (⚡ icon), and user profile icon
+  - [x] 2.2 Build LeftSidebar component with search bar, navigation menu items, and user profile preview
+  - [x] 2.3 Implement RightSidebar component with project list, "New Project" option, and load more functionality
+  - [x] 2.4 Add collapsible functionality to both sidebars with smooth animations
+  - [x] 2.5 Create UserProfilePopover component with avatar, name, email, and menu options (Settings, Logout, Edit Profile)
+  - [x] 2.6 Implement responsive layout that adapts to different screen sizes (desktop, tablet, mobile)
+  - [x] 2.7 Add light/dark mode toggle at bottom of left sidebar with theme persistence
 
 - [ ] 3.0 Build Chat Interface and Messaging System
   - [ ] 3.1 Create ChatArea component with "Welcome to Script" message and subtitle
