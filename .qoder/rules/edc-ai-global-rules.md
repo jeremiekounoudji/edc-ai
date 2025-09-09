@@ -27,6 +27,7 @@ Your mission is to build a **secure, scalable, chat-first web application** that
 ## Core Development Rules
 
 * **Chat-first principle** → the chat interface is the main entry point.
+**exclusively** use HeroUi base components exept if user specifically mention not to
 * **ALWAYS** build modular, reusable components (`component-one`, `component-two`).
 * **ALWAYS** provide shortcuts from chat to insights (e.g., key results, analytics).
 * **ALWAYS** keep files under \~200 lines (max 500).

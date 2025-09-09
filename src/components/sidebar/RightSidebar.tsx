@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { Button, Card, CardBody, Checkbox } from '@heroui/react';
-import { FiPlus, FiMoreHorizontal, FiFolder } from 'react-icons/fi';
+import React, { useState, useMemo } from 'react';
+import { Button, Card, CardBody, Checkbox, Input } from '@heroui/react';
+import { FiPlus, FiMoreHorizontal, FiFolder, FiSearch } from 'react-icons/fi';
 import { Project } from '../../lib/types/project';
 import { formatRelativeTime, truncateText } from '../../lib/utils/common';
+import { CreateProjectModal } from '../ui/CreateProjectModal';
+import { EditProjectModal } from '../ui/EditProjectModal';
+import { ProjectContextMenu } from '../ui/ProjectContextMenu';
 
 interface RightSidebarProps {
   isCollapsed?: boolean;
@@ -10,9 +13,10 @@ interface RightSidebarProps {
   projects?: Project[];
   selectedProjects?: string[];
   onProjectSelect?: (projectId: string) => void;
-  onProjectCreate?: () => void;
+  onProjectCreate?: (data: { title: string; description: string }) => void;
+  onProjectUpdate?: (data: { id: string; title: string; description: string }) => void;
+  onProjectDelete?: (projectId: string) => void;
   onProjectLoadMore?: () => void;
-  onProjectMenuClick?: (projectId: string) => void;
   isLoading?: boolean;
   hasMore?: boolean;
 }
@@ -24,12 +28,21 @@ export function RightSidebar({
   selectedProjects = [],
   onProjectSelect,
   onProjectCreate,
+  onProjectUpdate,
+  onProjectDelete,
   onProjectLoadMore,
-  onProjectMenuClick,
   isLoading = false,
   hasMore = true,
 }: RightSidebarProps) {
   const [showAllProjects, setShowAllProjects] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | undefined>();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [contextMenu, setContextMenu] = useState<{
+    project: Project;
+    position: { x: number; y: number };
+  } | null>(null);
 
   // Mock projects for demonstration
   const mockProjects: Project[] = [
@@ -76,15 +89,61 @@ export function RightSidebar({
   ];
 
   const displayProjects = projects.length > 0 ? projects : mockProjects;
-  const visibleProjects = showAllProjects ? displayProjects : displayProjects.slice(0, 15);
+  
+  // Filter projects based on search query
+  const filteredProjects = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return displayProjects;
+    }
+    
+    const normalizedQuery = searchQuery.toLowerCase().trim();
+    return displayProjects.filter(project =>
+      project.title.toLowerCase().includes(normalizedQuery) ||
+      project.description.toLowerCase().includes(normalizedQuery)
+    );
+  }, [displayProjects, searchQuery]);
+  
+  const visibleProjects = showAllProjects ? filteredProjects : filteredProjects.slice(0, 15);
 
   const handleProjectClick = (projectId: string) => {
     onProjectSelect?.(projectId);
   };
 
-  const handleProjectMenuClick = (e: React.MouseEvent, projectId: string) => {
+  const handleProjectMenuClick = (e: React.MouseEvent, project: Project) => {
     e.stopPropagation();
-    onProjectMenuClick?.(projectId);
+    setContextMenu({
+      project,
+      position: { x: e.clientX, y: e.clientY },
+    });
+  };
+
+  const handleCreateProject = async (data: { title: string; description: string }) => {
+    await onProjectCreate?.(data);
+    setShowCreateModal(false);
+  };
+
+  const handleUpdateProject = async (data: { id: string; title: string; description: string }) => {
+    await onProjectUpdate?.(data);
+    setShowEditModal(false);
+    setEditingProject(undefined);
+  };
+
+  const handleDeleteProject = async (projectId: string) => {
+    await onProjectDelete?.(projectId);
+    setShowEditModal(false);
+    setEditingProject(undefined);
+  };
+
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project);
+    setShowEditModal(true);
+    setContextMenu(null);
+  };
+
+  const handleDeleteProjectFromContext = (project: Project) => {
+    setEditingProject(project);
+    setShowEditModal(true);
+    setContextMenu(null);
   };
 
   const handleLoadMore = () => {
@@ -139,18 +198,32 @@ export function RightSidebar({
   return (
     <aside className="flex h-full w-80 flex-col border-l border-border bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <h2 className="text-lg font-semibold text-foreground">
-          Projects ({displayProjects.length})
-        </h2>
-        <Button
-          isIconOnly
-          variant="ghost"
+      <div className="p-4 border-b border-border">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-semibold text-foreground">
+            Projects ({filteredProjects.length})
+          </h2>
+          <Button
+            isIconOnly
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <FiMoreHorizontal className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        {/* Search Input */}
+        <Input
+          type="text"
+          placeholder="Search projects..."
+          value={searchQuery}
+          onValueChange={setSearchQuery}
+          startContent={<FiSearch className="h-4 w-4 text-muted-foreground" />}
+          variant="bordered"
           size="sm"
-          className="text-muted-foreground hover:text-foreground"
-        >
-          <FiMoreHorizontal className="h-4 w-4" />
-        </Button>
+          className="w-full"
+        />
       </div>
 
       {/* New Project Button */}
@@ -159,7 +232,7 @@ export function RightSidebar({
           variant="bordered"
           size="sm"
           startContent={<FiPlus className="h-4 w-4" />}
-          onClick={onProjectCreate}
+          onClick={() => setShowCreateModal(true)}
           className="w-full justify-start"
         >
           New Project
@@ -203,7 +276,7 @@ export function RightSidebar({
                     isIconOnly
                     variant="ghost"
                     size="sm"
-                    onClick={(e) => handleProjectMenuClick(e, project.id)}
+                    onClick={(e) => handleProjectMenuClick(e, project)}
                     className="h-6 w-6 min-w-6 opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <FiMoreHorizontal className="h-3 w-3" />
@@ -213,8 +286,19 @@ export function RightSidebar({
             </Card>
           ))}
 
+          {/* No Results Message */}
+          {filteredProjects.length === 0 && searchQuery.trim() && (
+            <div className="text-center py-8">
+              <FiFolder className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">No projects found</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Try adjusting your search terms
+              </p>
+            </div>
+          )}
+
           {/* Load More Button */}
-          {hasMore && (
+          {hasMore && filteredProjects.length > 0 && (
             <div className="pt-2">
               <Button
                 variant="ghost"
@@ -229,6 +313,36 @@ export function RightSidebar({
           )}
         </div>
       </div>
+
+      {/* Modals */}
+      <CreateProjectModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onCreateProject={handleCreateProject}
+      />
+
+      <EditProjectModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false);
+          setEditingProject(undefined);
+        }}
+        project={editingProject}
+        onUpdateProject={handleUpdateProject}
+        onDeleteProject={handleDeleteProject}
+      />
+
+      {/* Context Menu */}
+      {contextMenu && (
+        <ProjectContextMenu
+          project={contextMenu.project}
+          isOpen={true}
+          onClose={() => setContextMenu(null)}
+          position={contextMenu.position}
+          onEdit={handleEditProject}
+          onDelete={handleDeleteProjectFromContext}
+        />
+      )}
     </aside>
   );
 }
