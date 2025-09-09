@@ -20,6 +20,19 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Libraries Included
+
+This project comes with the following libraries pre-configured:
+
+- [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework
+- [HeroUI](https://www.heroui.com/) - Beautiful, fast and modern React UI library
+- [Framer Motion](https://www.framer.com/motion/) - A production-ready motion library for React
+- [React Icons](https://react-icons.github.io/react-icons/) - Popular icons as React components
+
+## HeroUI Configuration
+
+HeroUI has been configured with the `HeroUIProvider` in `app/layout.tsx`. You can start using HeroUI components immediately in your components.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
