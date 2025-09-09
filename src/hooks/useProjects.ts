@@ -131,21 +131,18 @@ export function useProjects() {
       // Simulate API call for more projects
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Generate mock projects for demonstration
-      const mockProjects: Project[] = Array.from({ length: 15 }, (_, index) => ({
-        id: generateId(),
-        title: `Project ${state.currentPage * 15 + index + 1}`,
-        description: `This is a sample project description for project ${state.currentPage * 15 + index + 1}.`,
-        createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
-        updatedAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-        chatSessions: [],
-      }));
+      // Load projects from storage service
+      const projectStorage = await import('../lib/services/projectStorage');
+      const { projects: loadedProjects, hasMore } = await projectStorage.default.getProjects(
+        state.currentPage + 1,
+        15
+      );
 
       setState(prev => ({
         ...prev,
-        projects: [...prev.projects, ...mockProjects],
+        projects: [...prev.projects, ...loadedProjects],
         currentPage: prev.currentPage + 1,
-        hasMore: mockProjects.length === 15, // Stop loading if we get less than 15
+        hasMore,
         isLoading: false,
       }));
     } catch (error) {

@@ -44,51 +44,7 @@ export function RightSidebar({
     position: { x: number; y: number };
   } | null>(null);
 
-  // Mock projects for demonstration
-  const mockProjects: Project[] = [
-    {
-      id: '1',
-      title: 'Learning From 100 Years o...',
-      description: 'For athletes, high altitude prod...',
-      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-      chatSessions: [],
-    },
-    {
-      id: '2',
-      title: 'Research officiants',
-      description: 'Maxwell\'s equations—the foun...',
-      createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      chatSessions: [],
-    },
-    {
-      id: '3',
-      title: 'What does a senior lead de...',
-      description: 'Physiological respiration involv...',
-      createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-      chatSessions: [],
-    },
-    {
-      id: '4',
-      title: 'Write a sweet note to your...',
-      description: 'In the eighteenth century the G...',
-      createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
-      chatSessions: [],
-    },
-    {
-      id: '5',
-      title: 'Meet with cake bakers',
-      description: 'Physical space is often conceiv...',
-      createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
-      updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-      chatSessions: [],
-    },
-  ];
-
-  const displayProjects = projects.length > 0 ? projects : mockProjects;
+  const displayProjects = projects;
   
   // Filter projects based on search query
   const filteredProjects = useMemo(() => {
