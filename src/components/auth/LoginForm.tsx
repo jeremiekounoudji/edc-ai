@@ -113,10 +113,6 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
               errorMessage={getFieldError('email')}
               variant="bordered"
               size="lg"
-              classNames={{
-                input: "rounded-lg",
-                inputWrapper: "rounded-lg border-2 hover:border-gray-400 focus-within:border-blue-500"
-              }}
               required
             />
           </div>
@@ -147,10 +143,6 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
               errorMessage={getFieldError('password')}
               variant="bordered"
               size="lg"
-              classNames={{
-                input: "rounded-lg",
-                inputWrapper: "rounded-lg border-2 hover:border-gray-400 focus-within:border-blue-500"
-              }}
               required
             />
           </div>
@@ -171,7 +163,7 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
             type="submit"
             color="primary"
             size="lg"
-            className="w-full rounded-lg font-medium"
+            className="w-full"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -201,7 +193,7 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
         <Button
           variant="bordered"
           size="lg"
-          className="w-full rounded-lg font-medium border-2 hover:border-gray-400"
+          className="w-full"
           onClick={handleGoogleLogin}
           disabled={isGoogleLoading || isLoading}
         >
