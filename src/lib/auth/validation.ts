@@ -18,18 +18,6 @@ export const validatePassword = (password: string): ValidationError | null => {
     return { field: 'password', message: 'Password is required' };
   }
   
-  if (password.length < 8) {
-    return { field: 'password', message: 'Password must be at least 8 characters long' };
-  }
-  
-  if (!/\d/.test(password)) {
-    return { field: 'password', message: 'Password must contain at least one number' };
-  }
-  
-  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-    return { field: 'password', message: 'Password must contain at least one special character' };
-  }
-  
   return null;
 };
 
@@ -48,14 +36,6 @@ export const validateConfirmPassword = (password: string, confirmPassword: strin
 export const validateName = (name: string, fieldName: 'firstName' | 'lastName'): ValidationError | null => {
   if (!name) {
     return { field: fieldName, message: `${fieldName === 'firstName' ? 'First name' : 'Last name'} is required` };
-  }
-  
-  if (name.length < 2) {
-    return { field: fieldName, message: `${fieldName === 'firstName' ? 'First name' : 'Last name'} must be at least 2 characters long` };
-  }
-  
-  if (!/^[a-zA-Z\s]+$/.test(name)) {
-    return { field: fieldName, message: `${fieldName === 'firstName' ? 'First name' : 'Last name'} can only contain letters and spaces` };
   }
   
   return null;

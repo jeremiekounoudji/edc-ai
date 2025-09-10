@@ -12,7 +12,7 @@ const initialState: ChatState = {
 
 export function useChat() {
   const [state, setState] = useState<ChatState>(initialState);
-  const streamingHandlerRef = useRef<any>(null);
+  const streamingHandlerRef = useRef<AbortController | null>(null);
 
   // Create a new chat session
   const createSession = useCallback((title?: string) => {

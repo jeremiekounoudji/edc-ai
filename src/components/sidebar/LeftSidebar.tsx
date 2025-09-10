@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Input } from '@heroui/input';
 import { Button } from '@heroui/button';
+import { Switch } from '@heroui/switch';
 import { 
   FiSearch, 
   FiMessageSquare, 
@@ -56,7 +57,6 @@ export function LeftSidebar({
     { id: 'templates', label: 'Templates', icon: FiFileText },
     { id: 'documents', label: 'Documents', icon: FiFileText, hasAdd: true },
     { id: 'dashboards-reports', label: 'Dashboards & Reports', icon: FiTrendingUp },
-    { id: 'documents-new', label: 'Documents', icon: FiMessageSquare, hasNew: true },
     { id: 'suppliers', label: 'Suppliers', icon: FiUsers },
     { id: 'approvals', label: 'Approvals', icon: FiCheckCircle },
   ];
@@ -76,66 +76,77 @@ export function LeftSidebar({
 
   if (isCollapsed) {
     return (
-      <aside className="flex h-full w-16 flex-col border-r border-border bg-background">
+      <aside className="flex h-screen w-16 flex-col border-r border-border bg-background">
         {/* Collapsed Logo */}
-        <div className="flex h-16 items-center justify-center border-b border-border">
+        <div className="flex h-16 items-center justify-center border-b border-border flex-shrink-0">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <span className="text-sm font-bold">S</span>
           </div>
         </div>
 
-        {/* Collapsed Navigation */}
-        <nav className="flex-1 space-y-2 p-2">
+        {/* Collapsed Navigation - Scrollable */}
+        <nav className="flex-1 overflow-y-auto space-y-2 p-2">
           {navigationItems.map((item) => (
             <Button
               key={item.id}
               isIconOnly
-              variant={item.isActive ? 'solid' : 'ghost'}
+              variant={item.isActive ? 'solid' : 'light'}
               color={item.isActive ? 'primary' : 'default'}
               size="sm"
               onClick={() => handleNavigationClick(item.id)}
-              className="h-10 w-10"
+              className={`h-10 w-10 border-none ${
+                item.isActive 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground'
+              }`}
             >
               <item.icon className="h-4 w-4" />
             </Button>
           ))}
         </nav>
 
-        {/* Collapsed Settings */}
-        <div className="space-y-2 p-2 border-t border-border">
-          {settingsItems.map((item) => (
+        {/* Collapsed Bottom Section - Fixed */}
+        <div className="flex-shrink-0">
+          {/* Collapsed Settings */}
+          <div className="space-y-2 p-2 border-t border-border">
+            {settingsItems.map((item) => (
+              <Button
+                key={item.id}
+                isIconOnly
+                variant="light"
+                size="sm"
+                onClick={() => handleNavigationClick(item.id)}
+                className="h-10 w-10 bg-transparent border-none text-foreground hover:bg-accent hover:text-accent-foreground"
+              >
+                <item.icon className="h-4 w-4" />
+              </Button>
+            ))}
+          </div>
+
+          {/* Collapsed Theme Toggle */}
+          <div className="p-2 border-t border-border">
             <Button
-              key={item.id}
               isIconOnly
-              variant="ghost"
+              variant="light"
               size="sm"
-              onClick={() => handleNavigationClick(item.id)}
-              className="h-10 w-10"
+              onClick={toggleTheme}
+              className={`h-10 w-10 border-none ${
+                currentTheme === 'dark' 
+                  ? 'bg-orange-500 text-white' 
+                  : 'bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground'
+              }`}
             >
-              <item.icon className="h-4 w-4" />
+              <span className="text-lg">{getThemeIcon()}</span>
             </Button>
-          ))}
-        </div>
+          </div>
 
-        {/* Collapsed Theme Toggle */}
-        <div className="p-2 border-t border-border">
-          <Button
-            isIconOnly
-            variant="ghost"
-            size="sm"
-            onClick={toggleTheme}
-            className="h-10 w-10"
-          >
-            <span className="text-lg">{getThemeIcon()}</span>
-          </Button>
-        </div>
-
-        {/* Collapsed User Profile */}
-        <div className="p-2 border-t border-border">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-            <span className="text-xs font-medium text-muted-foreground">
-              {currentUser.name.charAt(0)}
-            </span>
+          {/* Collapsed User Profile */}
+          <div className="p-2 border-t border-border">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+              <span className="text-xs font-medium text-muted-foreground">
+                {currentUser.name.charAt(0)}
+              </span>
+            </div>
           </div>
         </div>
       </aside>
@@ -143,9 +154,9 @@ export function LeftSidebar({
   }
 
   return (
-    <aside className="flex h-full w-64 flex-col border-r border-border bg-background">
+    <aside className="flex h-screen w-64 flex-col border-r border-border bg-background">
       {/* Search Bar */}
-      <div className="p-4 border-b border-border">
+      <div className="p-4 border-b border-border flex-shrink-0">
         <Input
           type="text"
           placeholder="Search"
@@ -165,30 +176,25 @@ export function LeftSidebar({
         <p className="text-xs text-muted-foreground mt-1">⌘K</p>
       </div>
 
-      {/* Navigation Menu */}
-      <nav className="flex-1 space-y-2 p-4">
+      {/* Navigation Menu - Scrollable */}
+      <nav className="flex-1 overflow-y-auto space-y-2 p-4">
         {navigationItems.map((item) => (
           <Button
             key={item.id}
-            variant={item.isActive ? 'solid' : 'ghost'}
+            variant="light"
             color={item.isActive ? 'primary' : 'default'}
             size="sm"
             startContent={<item.icon className="h-4 w-4 flex-shrink-0" />}
             onClick={() => handleNavigationClick(item.id)}
-            className={`w-full justify-start h-10 px-3 !flex !items-center rounded-lg ${
+            className={`w-full justify-start h-10 px-3 !flex !items-center rounded-lg border-none ${
               item.isActive 
                 ? 'bg-primary text-primary-foreground font-medium' 
-                : 'text-foreground hover:bg-accent hover:text-accent-foreground'
+                : 'text-foreground hover:bg-accent hover:text-accent-foreground bg-transparent'
             }`}
           >
             <span className="flex-1 text-left text-sm font-medium leading-none">{item.label}</span>
             {item.hasAdd && (
               <FiPlus className="h-3 w-3 text-muted-foreground ml-2 flex-shrink-0" />
-            )}
-            {item.hasNew && (
-              <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full ml-2 font-medium flex-shrink-0">
-                NEW
-              </span>
             )}
           </Button>
         ))}
@@ -202,11 +208,11 @@ export function LeftSidebar({
             {settingsItems.map((item) => (
               <Button
                 key={item.id}
-                variant="ghost"
+                variant="light"
                 size="sm"
                 startContent={<item.icon className="h-4 w-4 flex-shrink-0" />}
                 onClick={() => handleNavigationClick(item.id)}
-                className="w-full justify-start h-10 px-3 text-foreground hover:bg-accent hover:text-accent-foreground !flex !items-center rounded-lg"
+                className="w-full justify-start h-10 px-3 text-foreground hover:bg-accent hover:text-accent-foreground bg-transparent border-none !flex !items-center rounded-lg"
               >
                 <span className="text-sm font-medium leading-none">{item.label}</span>
               </Button>
@@ -215,34 +221,44 @@ export function LeftSidebar({
         </div>
       </nav>
 
-      {/* Theme Toggle */}
-      <div className="p-4 border-t border-border">
-        <Button
-          variant="ghost"
-          size="sm"
-          startContent={<span className="text-lg flex-shrink-0">{getThemeIcon()}</span>}
-          onClick={toggleTheme}
-          className="w-full justify-start h-10 px-3 text-foreground hover:bg-accent hover:text-accent-foreground !flex !items-center rounded-lg"
-        >
-          <span className="text-sm font-medium leading-none">{getThemeLabel()}</span>
-        </Button>
-      </div>
-
-      {/* User Profile Preview */}
-      <div className="p-4 border-t border-border">
-        <div className="flex items-center space-x-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-            <span className="text-sm font-semibold text-muted-foreground">
-              {currentUser.name.charAt(0)}
-            </span>
+      {/* Bottom Section - Fixed */}
+      <div className="flex-shrink-0">
+        {/* Theme Toggle */}
+        <div className="p-4 border-t border-border">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <span className="text-lg flex-shrink-0">{getThemeIcon()}</span>
+              <span className="text-sm font-medium text-foreground">{getThemeLabel()}</span>
+            </div>
+            <Switch
+              isSelected={currentTheme === 'dark'}
+              onValueChange={toggleTheme}
+              size="sm"
+              color="warning"
+              classNames={{
+                wrapper: "group-data-[selected=true]:bg-orange-500",
+                thumb: "group-data-[selected=true]:bg-white"
+              }}
+            />
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-foreground truncate">
-              {currentUser.name}
-            </p>
-            <p className="text-xs text-muted-foreground truncate mt-0.5">
-              {currentUser.email}
-            </p>
+        </div>
+
+        {/* User Profile Preview */}
+        <div className="p-4 border-t border-border">
+          <div className="flex items-center space-x-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+              <span className="text-sm font-semibold text-muted-foreground">
+                {currentUser.name.charAt(0)}
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-foreground truncate">
+                {currentUser.name}
+              </p>
+              <p className="text-xs text-muted-foreground truncate mt-0.5">
+                {currentUser.email}
+              </p>
+            </div>
           </div>
         </div>
       </div>

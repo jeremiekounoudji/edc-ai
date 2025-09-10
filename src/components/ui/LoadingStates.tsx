@@ -98,7 +98,13 @@ export function ProjectLoadingSkeleton() {
 }
 
 // Button loading state
-export function ButtonLoadingState({ children, isLoading, ...props }: any) {
+interface ButtonLoadingStateProps {
+  children: React.ReactNode;
+  isLoading: boolean;
+  [key: string]: unknown;
+}
+
+export function ButtonLoadingState({ children, isLoading, ...props }: ButtonLoadingStateProps) {
   return (
     <button
       {...props}

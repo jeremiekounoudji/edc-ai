@@ -4,6 +4,7 @@ import { LeftSidebar } from '../sidebar/LeftSidebar';
 import { RightSidebar } from '../sidebar/RightSidebar';
 import { FiMenu, FiX } from 'react-icons/fi';
 import { Button } from '@heroui/button';
+import { Project } from '../../lib/types/project';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -12,7 +13,7 @@ interface MainLayoutProps {
     email: string;
     avatar?: string;
   };
-  projects?: any[];
+  projects?: Project[];
   onSearch?: (query: string) => void;
   onNavigate?: (section: string) => void;
   onProjectSelect?: (projectId: string) => void;
@@ -103,13 +104,15 @@ export function MainLayout({
       )}
 
       {/* Main Content Area */}
-      <div className="flex flex-1 flex-col min-w-0">
-        {/* Top Navigation */}
-        <TopNavigation
-          user={user}
-          onUpgradeClick={onUpgradeClick}
-          currentTitle={currentTitle}
-        />
+      <div className="flex flex-1 flex-col min-w-0 relative">
+        {/* Top Navigation - Only spans chat area */}
+        <div className="relative z-50">
+          <TopNavigation
+            user={user}
+            onUpgradeClick={onUpgradeClick}
+            currentTitle={currentTitle}
+          />
+        </div>
 
         {/* Mobile Menu Buttons */}
         <div className="lg:hidden flex items-center justify-between p-3 border-b border-border bg-background">
@@ -137,7 +140,7 @@ export function MainLayout({
         </div>
 
         {/* Main Content */}
-        <main className="flex flex-1 overflow-hidden pt-16">
+        <main className="flex flex-1 overflow-hidden">
           {/* Chat Area */}
           <div className="flex-1 flex flex-col min-w-0">
             {children}

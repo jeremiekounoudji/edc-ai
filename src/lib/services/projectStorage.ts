@@ -22,7 +22,7 @@ export class ProjectStorageService {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        this.projects = JSON.parse(stored).map((project: any) => ({
+        this.projects = JSON.parse(stored).map((project: Project) => ({
           ...project,
           createdAt: new Date(project.createdAt),
           updatedAt: new Date(project.updatedAt),
@@ -266,7 +266,7 @@ export class ProjectStorageService {
       }
 
       // Validate and transform imported projects
-      const projects = importedProjects.map((project: any) => ({
+      const projects = importedProjects.map((project: Partial<Project>) => ({
         id: project.id || generateId(),
         title: project.title || 'Imported Project',
         description: project.description || '',

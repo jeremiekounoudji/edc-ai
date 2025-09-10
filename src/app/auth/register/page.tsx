@@ -8,8 +8,8 @@ export default function RegisterPage() {
   const router = useRouter();
 
   const handleRegisterSuccess = () => {
-    // Redirect to main page after successful registration
-    router.push('/');
+    // Redirect to chat page after successful registration
+    router.push('/chat');
   };
 
   const handleLogin = () => {

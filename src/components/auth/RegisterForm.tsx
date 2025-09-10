@@ -6,6 +6,7 @@ import { Input } from '@heroui/input';
 import { Select, SelectItem } from '@heroui/select';
 import { Card, CardBody, CardHeader } from '@heroui/card';
 import { Spinner } from '@heroui/spinner';
+import { addToast } from '@heroui/toast';
 import { FiEye, FiEyeOff, FiMail, FiLock, FiUser } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
 import { validateRegisterForm } from '@/lib/auth/validation';
@@ -25,7 +26,7 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
     confirmPassword: '',
     firstName: '',
     lastName: '',
-    role: '' as UserRole | '',
+    role: '' as UserRole,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -48,7 +49,15 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
     // Validate form
     const validationErrors = validateRegisterForm(formData);
     if (validationErrors.length > 0) {
-      setErrors(validationErrors);
+      // Show validation errors in toast
+      validationErrors.forEach(error => {
+        addToast({
+          title: 'Validation Error',
+          description: error.message,
+          color: 'danger',
+          variant: 'flat'
+        });
+      });
       return;
     }
 
@@ -56,12 +65,23 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
     setErrors([]);
 
     // Submit form
-    const result = await register(formData as any);
+    const result = await register(formData);
     
     if (result.success) {
+      addToast({
+        title: 'Success',
+        description: 'Account created successfully!',
+        color: 'success',
+        variant: 'flat'
+      });
       onSuccess?.();
     } else {
-      setErrors([{ field: 'general', message: result.message }]);
+      addToast({
+        title: 'Registration Failed',
+        description: result.message,
+        color: 'danger',
+        variant: 'flat'
+      });
     }
   };
 
@@ -70,9 +90,20 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
     try {
       const result = await registerWithGoogle();
       if (result.success) {
+        addToast({
+          title: 'Success',
+          description: 'Google registration successful!',
+          color: 'success',
+          variant: 'flat'
+        });
         onSuccess?.();
       } else {
-        setErrors([{ field: 'general', message: result.message }]);
+        addToast({
+          title: 'Google Registration Failed',
+          description: result.message,
+          color: 'danger',
+          variant: 'flat'
+        });
       }
     } finally {
       setIsGoogleLoading(false);
@@ -99,15 +130,6 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
       </CardHeader>
       
       <CardBody className="space-y-6">
-        {/* General Error Message */}
-        {getGeneralError() && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
-            <p className="text-red-600 dark:text-red-400 text-sm">
-              {getGeneralError()}
-            </p>
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name Fields Row */}
           <div className="grid grid-cols-2 gap-4">
@@ -237,7 +259,7 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
               required
             >
               {userRoles.map((role) => (
-                <SelectItem key={role.value} value={role.value}>
+                <SelectItem key={role.value}>
                   {role.label}
                 </SelectItem>
               ))}

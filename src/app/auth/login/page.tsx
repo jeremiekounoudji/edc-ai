@@ -8,8 +8,8 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleLoginSuccess = () => {
-    // Redirect to main page after successful login
-    router.push('/');
+    // Redirect to chat page after successful login
+    router.push('/chat');
   };
 
   const handleForgotPassword = () => {
@@ -18,7 +18,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-background flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
         <LoginForm 
           onSuccess={handleLoginSuccess}

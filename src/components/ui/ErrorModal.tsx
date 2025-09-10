@@ -119,7 +119,7 @@ export function ErrorModal({ isOpen, onClose, error, onRetry }: ErrorModalProps)
             {error.type === 'network' && (
               <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                 <p className="text-sm text-blue-700 dark:text-blue-300">
-                  <strong>Network Status:</strong> If you're experiencing connectivity issues, 
+                  <strong>Network Status:</strong> If you&apos;re experiencing connectivity issues, 
                   please check your internet connection and firewall settings.
                 </p>
               </div>

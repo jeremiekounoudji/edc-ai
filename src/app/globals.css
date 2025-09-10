@@ -1,4 +1,8 @@
 @import "tailwindcss";
+@plugin './hero.ts';
+/* Note: You may need to change the path to fit your project structure */
+@source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@custom-variant dark (&:is(.dark *));
 
 :root {
   /* Light theme colors */
@@ -93,6 +97,7 @@
 
 body {
   background: hsl(var(--background));
+  height: 100vh;
   color: hsl(var(--foreground));
   font-family: 'Inter', system-ui, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;

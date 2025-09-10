@@ -150,7 +150,7 @@ export function EditProjectModal({
                   Delete Project
                 </h3>
                 <p className="text-muted-foreground">
-                  Are you sure you want to delete "{project.title}"? This action cannot be undone.
+                  Are you sure you want to delete &quot;{project.title}&quot;? This action cannot be undone.
                 </p>
                 <p className="text-sm text-muted-foreground mt-2">
                   This will also remove all associated chat sessions from this project.

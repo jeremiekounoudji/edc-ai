@@ -5,6 +5,7 @@ import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
 import { Card, CardBody, CardHeader } from '@heroui/card';
 import { Spinner } from '@heroui/spinner';
+import { addToast } from '@heroui/toast';
 import { FiEye, FiEyeOff, FiMail, FiLock } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
 import { validateLoginForm } from '@/lib/auth/validation';
@@ -37,11 +38,19 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
     e.preventDefault();
     
     // Validate form
-    const validationErrors = validateLoginForm(formData.email, formData.password);
-    if (validationErrors.length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+    // const validationErrors = validateLoginForm(formData.email, formData.password);
+    // if (validationErrors.length > 0) {
+    //   // Show validation errors in toast
+    //   validationErrors.forEach(error => {
+    //     addToast({
+    //       title: 'Validation Error',
+    //       description: error.message,
+    //       color: 'danger',
+    //       variant: 'flat'
+    //     });
+    //   });
+    //   return;
+    // }
 
     // Clear previous errors
     setErrors([]);
@@ -50,9 +59,20 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
     const result = await login(formData);
     
     if (result.success) {
+      addToast({
+        title: 'Success',
+        description: 'Login successful!',
+        color: 'success',
+        variant: 'flat'
+      });
       onSuccess?.();
     } else {
-      setErrors([{ field: 'general', message: result.message }]);
+      addToast({
+        title: 'Login Failed',
+        description: result.message,
+        color: 'danger',
+        variant: 'flat'
+      });
     }
   };
 
@@ -61,9 +81,20 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
     try {
       const result = await loginWithGoogle();
       if (result.success) {
+        addToast({
+          title: 'Success',
+          description: 'Google login successful!',
+          color: 'success',
+          variant: 'flat'
+        });
         onSuccess?.();
       } else {
-        setErrors([{ field: 'general', message: result.message }]);
+        addToast({
+          title: 'Google Login Failed',
+          description: result.message,
+          color: 'danger',
+          variant: 'flat'
+        });
       }
     } finally {
       setIsGoogleLoading(false);
@@ -90,15 +121,6 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
       </CardHeader>
       
       <CardBody className="space-y-6">
-        {/* General Error Message */}
-        {getGeneralError() && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
-            <p className="text-red-600 dark:text-red-400 text-sm">
-              {getGeneralError()}
-            </p>
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email Field */}
           <div>
