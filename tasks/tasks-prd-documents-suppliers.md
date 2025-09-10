@@ -46,16 +46,16 @@
   - [x] 2.6 Add confirmation dialogs for delete operations
   - [x] 2.7 Create main Documents page component that integrates all document components
   - [x] 2.8 ~~Test document components with Playwright MCP for UI interactions and responsive behavior~~ (Skipped per user request)
-- [ ] 3.0 Create Supplier Management Components
-  - [ ] 3.1 Build SupplierCard component with company info, avatar, rating, and contact button
-  - [ ] 3.2 Implement SupplierGrid component with responsive card layout
-  - [ ] 3.3 Create SupplierFilters component with search, rating range, and sector filters
-  - [ ] 3.4 Build ContactPopover component with WhatsApp, email, and call options
-  - [ ] 3.5 Add pagination component for suppliers (20 items per page)
-  - [ ] 3.6 Implement bulk selection functionality for multiple suppliers
-  - [ ] 3.7 Add confirmation dialogs for delete operations
-  - [ ] 3.8 Create main Suppliers page component that integrates all supplier components
-  - [ ] 3.9 Test supplier components with Playwright MCP for UI interactions and contact popover functionality
+- [x] 3.0 Create Supplier Management Components
+  - [x] 3.1 Build SupplierCard component with company info, avatar, rating, and contact button
+  - [x] 3.2 Implement SupplierGrid component with responsive card layout
+  - [x] 3.3 Create SupplierFilters component with search, rating range, and sector filters
+  - [x] 3.4 Build ContactPopover component with WhatsApp, email, and call options
+  - [x] 3.5 Add pagination component for suppliers (20 items per page)
+  - [x] 3.6 Implement bulk selection functionality for multiple suppliers
+  - [x] 3.7 Add confirmation dialogs for delete operations
+  - [x] 3.8 Create main Suppliers page component that integrates all supplier components
+  - [x] 3.9 ~~Test supplier components with Playwright MCP for UI interactions and contact popover functionality~~ (Skipped per user request)
 - [ ] 4.0 Implement Navigation and Layout Integration
   - [ ] 4.1 Update MainLayout component to handle tab switching between chat/documents/suppliers
   - [ ] 4.2 Modify LeftSidebar navigation to properly route to documents and suppliers pages
