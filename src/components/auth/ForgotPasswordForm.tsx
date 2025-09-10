@@ -86,17 +86,17 @@ export function ForgotPasswordForm({ onSuccess, onBackToLogin }: ForgotPasswordF
   if (isSuccess) {
     return (
       <Card className="w-full max-w-md mx-auto shadow-lg">
-        <CardHeader className="text-center pb-2">
-          <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
-            <FiMail className="w-8 h-8 text-green-600 dark:text-green-400" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Check Your Email
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            We've sent a password reset link to <strong>{formData.email}</strong>
-          </p>
-        </CardHeader>
+      <CardHeader className="text-center pb-6">
+        <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+          <FiMail className="w-8 h-8 text-green-600 dark:text-green-400" />
+        </div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          Check Your Email
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">
+          We've sent a password reset link to <strong>{formData.email}</strong>
+        </p>
+      </CardHeader>
         
         <CardBody className="space-y-6">
           <div className="text-center space-y-4">
@@ -135,8 +135,8 @@ export function ForgotPasswordForm({ onSuccess, onBackToLogin }: ForgotPasswordF
 
   return (
     <Card className="w-full max-w-md mx-auto shadow-lg">
-      <CardHeader className="text-center pb-2">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+      <CardHeader className="text-center pb-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           Forgot Password?
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
