@@ -235,17 +235,16 @@ export function RightSidebar({
       </div>
 
       {/* New Project Button */}
-      <div className="p-4 border-b border-border">
-        <Button
-          variant="bordered"
-          size="sm"
+      <Button
+          color="warning"
+          variant="solid"
+          size="md"
           startContent={<FiPlus className="h-4 w-4 flex-shrink-0" />}
           onClick={() => setShowCreateModal(true)}
-          className="w-full justify-start !flex !items-center rounded-lg"
+          className="w-auto justify-center !flex !items-center rounded-lg m-2"
         >
           <span className="leading-none">New Project</span>
         </Button>
-      </div>
 
       {/* Project List */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
