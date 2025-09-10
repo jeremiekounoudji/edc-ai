@@ -88,7 +88,7 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-md mx-auto shadow-lg">
       <CardHeader className="text-center pb-2">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Create Account
@@ -123,6 +123,10 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
                 errorMessage={getFieldError('firstName')}
                 variant="bordered"
                 size="lg"
+                classNames={{
+                  input: "rounded-lg",
+                  inputWrapper: "rounded-lg border-2 hover:border-gray-400 focus-within:border-blue-500"
+                }}
                 required
               />
             </div>
@@ -138,6 +142,10 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
                 errorMessage={getFieldError('lastName')}
                 variant="bordered"
                 size="lg"
+                classNames={{
+                  input: "rounded-lg",
+                  inputWrapper: "rounded-lg border-2 hover:border-gray-400 focus-within:border-blue-500"
+                }}
                 required
               />
             </div>
@@ -156,6 +164,10 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
               errorMessage={getFieldError('email')}
               variant="bordered"
               size="lg"
+              classNames={{
+                input: "rounded-lg",
+                inputWrapper: "rounded-lg border-2 hover:border-gray-400 focus-within:border-blue-500"
+              }}
               required
             />
           </div>
@@ -187,6 +199,10 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
                 errorMessage={getFieldError('password')}
                 variant="bordered"
                 size="lg"
+                classNames={{
+                  input: "rounded-lg",
+                  inputWrapper: "rounded-lg border-2 hover:border-gray-400 focus-within:border-blue-500"
+                }}
                 required
               />
             </div>
@@ -215,6 +231,10 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
                 errorMessage={getFieldError('confirmPassword')}
                 variant="bordered"
                 size="lg"
+                classNames={{
+                  input: "rounded-lg",
+                  inputWrapper: "rounded-lg border-2 hover:border-gray-400 focus-within:border-blue-500"
+                }}
                 required
               />
             </div>
@@ -234,6 +254,12 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
               size="lg"
               isInvalid={!!getFieldError('role')}
               errorMessage={getFieldError('role')}
+              classNames={{
+                trigger: "rounded-lg border-2 hover:border-gray-400 focus-within:border-blue-500",
+                value: "rounded-lg",
+                listbox: "rounded-lg shadow-lg border border-gray-200",
+                popover: "rounded-lg"
+              }}
               required
             >
               {userRoles.map((role) => (
@@ -249,7 +275,7 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
             type="submit"
             color="primary"
             size="lg"
-            className="w-full"
+            className="w-full rounded-lg font-medium"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -279,7 +305,7 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
         <Button
           variant="bordered"
           size="lg"
-          className="w-full"
+          className="w-full rounded-lg font-medium border-2 hover:border-gray-400"
           onClick={handleGoogleRegister}
           disabled={isGoogleLoading || isLoading}
         >

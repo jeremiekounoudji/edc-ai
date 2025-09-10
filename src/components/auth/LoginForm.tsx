@@ -79,7 +79,7 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-md mx-auto shadow-lg">
       <CardHeader className="text-center pb-2">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Welcome Back
@@ -113,6 +113,10 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
               errorMessage={getFieldError('email')}
               variant="bordered"
               size="lg"
+              classNames={{
+                input: "rounded-lg",
+                inputWrapper: "rounded-lg border-2 hover:border-gray-400 focus-within:border-blue-500"
+              }}
               required
             />
           </div>
@@ -143,6 +147,10 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
               errorMessage={getFieldError('password')}
               variant="bordered"
               size="lg"
+              classNames={{
+                input: "rounded-lg",
+                inputWrapper: "rounded-lg border-2 hover:border-gray-400 focus-within:border-blue-500"
+              }}
               required
             />
           </div>
@@ -163,7 +171,7 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
             type="submit"
             color="primary"
             size="lg"
-            className="w-full"
+            className="w-full rounded-lg font-medium"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -193,7 +201,7 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
         <Button
           variant="bordered"
           size="lg"
-          className="w-full"
+          className="w-full rounded-lg font-medium border-2 hover:border-gray-400"
           onClick={handleGoogleLogin}
           disabled={isGoogleLoading || isLoading}
         >
