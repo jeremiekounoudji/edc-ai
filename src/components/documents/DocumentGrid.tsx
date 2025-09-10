@@ -1,10 +1,12 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 import { Document, DocumentGroup } from '../../lib/types/documents';
 import { DocumentCard } from './DocumentCard';
 import { getDocumentTypeLabels } from '../../lib/mockData/documents';
+import { SkeletonGrid, LoadingSpinner } from '../ui/LoadingStates';
 
 interface DocumentGridProps {
   documents: Document[];
@@ -15,6 +17,7 @@ interface DocumentGridProps {
   onDelete: (document: Document) => void;
   showSelection?: boolean;
   groupByType?: boolean;
+  isLoading?: boolean;
 }
 
 export function DocumentGrid({
@@ -25,9 +28,12 @@ export function DocumentGrid({
   onDownload,
   onDelete,
   showSelection = false,
-  groupByType = true
+  groupByType = true,
+  isLoading = false
 }: DocumentGridProps) {
   const typeLabels = getDocumentTypeLabels();
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   // Group documents by type if groupByType is true
   const groupedDocuments = React.useMemo(() => {
@@ -60,15 +66,46 @@ export function DocumentGrid({
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.1,
+        delayChildren: 0.2
       }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    hidden: { 
+      opacity: 0, 
+      y: 30,
+      scale: 0.95
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15
+      }
+    }
   };
+
+  const groupVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 80,
+        damping: 12
+      }
+    }
+  };
+
+  if (isLoading) {
+    return <SkeletonGrid count={8} />;
+  }
 
   if (documents.length === 0) {
     return (
@@ -109,13 +146,14 @@ export function DocumentGrid({
 
       {/* Document Groups */}
       <motion.div
+        ref={ref}
         variants={containerVariants}
         initial="hidden"
-        animate="visible"
+        animate={isInView ? "visible" : "hidden"}
         className="space-y-8"
       >
         {groupedDocuments.map((group) => (
-          <motion.div key={group.type} variants={itemVariants}>
+          <motion.div key={group.type} variants={groupVariants}>
             {/* Group Header */}
             {groupByType && (
               <div className="flex items-center justify-between mb-4">

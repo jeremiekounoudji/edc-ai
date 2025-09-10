@@ -1,10 +1,12 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Card, CardBody, CardHeader, Button, Checkbox } from '@heroui/react';
 import { FiDownload, FiTrash2, FiFileText, FiFile, FiImage, FiArchive } from 'react-icons/fi';
 import { Document } from '../../lib/types/documents';
 import { formatFileSize, formatDate, getFileTypeIcon } from '../../lib/utils/formatters';
+import { documentToasts } from '../../lib/utils/toast';
 
 interface DocumentCardProps {
   document: Document;
@@ -28,11 +30,21 @@ export function DocumentCard({
   };
 
   const handleDownload = () => {
-    onDownload?.(document);
+    try {
+      onDownload?.(document);
+      documentToasts.downloadSuccess(document.name);
+    } catch (error) {
+      documentToasts.downloadError(document.name);
+    }
   };
 
   const handleDelete = () => {
-    onDelete?.(document);
+    try {
+      onDelete?.(document);
+      documentToasts.deleteSuccess(document.name);
+    } catch (error) {
+      documentToasts.deleteError(document.name);
+    }
   };
 
   const getFileIcon = () => {
@@ -68,11 +80,20 @@ export function DocumentCard({
   };
 
   return (
-    <Card 
-      className={`w-full transition-all duration-200 hover:shadow-md ${
-        isSelected ? 'ring-2 ring-primary' : ''
-      }`}
+    <motion.div
+      whileHover={{ 
+        y: -4,
+        scale: 1.02,
+        transition: { duration: 0.2 }
+      }}
+      whileTap={{ scale: 0.98 }}
+      className="w-full"
     >
+      <Card 
+        className={`w-full transition-all duration-200 hover:shadow-lg ${
+          isSelected ? 'ring-2 ring-primary' : ''
+        }`}
+      >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center space-x-3">
           {showSelection && (
@@ -111,29 +132,40 @@ export function DocumentCard({
           )}
           
           <div className="flex justify-end space-x-2 pt-2">
-            <Button
-              size="sm"
-              variant="light"
-              color="primary"
-              startContent={<FiDownload className="h-4 w-4" />}
-              onClick={handleDownload}
-              className="min-w-0"
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              Download
-            </Button>
-            <Button
-              size="sm"
-              variant="light"
-              color="danger"
-              startContent={<FiTrash2 className="h-4 w-4" />}
-              onClick={handleDelete}
-              className="min-w-0"
+              <Button
+                size="sm"
+                variant="light"
+                color="primary"
+                startContent={<FiDownload className="h-4 w-4" />}
+                onClick={handleDownload}
+                className="min-w-0 transition-all duration-200 hover:bg-primary/10"
+              >
+                Download
+              </Button>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              Delete
-            </Button>
+              <Button
+                size="sm"
+                variant="light"
+                color="danger"
+                startContent={<FiTrash2 className="h-4 w-4" />}
+                onClick={handleDelete}
+                className="min-w-0 transition-all duration-200 hover:bg-danger/10"
+              >
+                Delete
+              </Button>
+            </motion.div>
           </div>
         </div>
       </CardBody>
     </Card>
+    </motion.div>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Input, Select, SelectItem, Button } from '@heroui/react';
 import { FiSearch, FiFilter, FiX } from 'react-icons/fi';
 import { DocumentFilters as DocumentFiltersType, DocumentType } from '../../lib/types/documents';
@@ -179,16 +180,23 @@ export function DocumentFilters({
           </div>
 
           {hasActiveFilters && (
-            <Button
-              size="sm"
-              variant="light"
-              color="danger"
-              startContent={<FiX className="h-4 w-4" />}
-              onClick={onClearFilters}
-              className="ml-4"
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              Clear Filters
-            </Button>
+              <Button
+                size="sm"
+                variant="light"
+                color="danger"
+                startContent={<FiX className="h-4 w-4" />}
+                onClick={onClearFilters}
+                className="ml-4 transition-all duration-200 hover:bg-danger/10"
+              >
+                Clear Filters
+              </Button>
+            </motion.div>
           )}
         </div>
       </div>

@@ -4,6 +4,7 @@ import React from 'react';
 import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@heroui/react';
 import { FiDownload, FiTrash2, FiMoreVertical, FiCheckSquare } from 'react-icons/fi';
 import { Document } from '../../lib/types/documents';
+import { documentToasts } from '../../lib/utils/toast';
 
 interface DocumentBulkActionsProps {
   selectedDocuments: Document[];
@@ -27,16 +28,26 @@ export function DocumentBulkActions({
   }
 
   const handleBulkDownload = () => {
-    onBulkDownload(selectedDocuments);
+    try {
+      onBulkDownload(selectedDocuments);
+      documentToasts.bulkDownloadSuccess(selectedCount);
+    } catch (error) {
+      documentToasts.bulkActionError('download', selectedCount);
+    }
   };
 
   const handleBulkDelete = () => {
-    onBulkDelete(selectedDocuments);
+    try {
+      onBulkDelete(selectedDocuments);
+      documentToasts.bulkDeleteSuccess(selectedCount);
+    } catch (error) {
+      documentToasts.bulkActionError('delete', selectedCount);
+    }
   };
 
   return (
-    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
-      <div className="bg-background border border-border rounded-lg shadow-lg p-4 flex items-center gap-3">
+    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-sm px-4 sm:max-w-none sm:px-0">
+      <div className="bg-background border border-border rounded-lg shadow-lg p-3 sm:p-4 flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
         {/* Selection Info */}
         <div className="flex items-center gap-2 text-sm text-foreground">
           <FiCheckSquare className="h-4 w-4 text-primary" />
@@ -46,7 +57,7 @@ export function DocumentBulkActions({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <Button
             size="sm"
             color="primary"
@@ -54,8 +65,10 @@ export function DocumentBulkActions({
             startContent={<FiDownload className="h-4 w-4" />}
             onClick={handleBulkDownload}
             disabled={disabled}
+            className="flex-1 sm:flex-none"
           >
-            Download All
+            <span className="hidden sm:inline">Download All</span>
+            <span className="sm:hidden">Download</span>
           </Button>
 
           <Button
@@ -65,8 +78,10 @@ export function DocumentBulkActions({
             startContent={<FiTrash2 className="h-4 w-4" />}
             onClick={handleBulkDelete}
             disabled={disabled}
+            className="flex-1 sm:flex-none"
           >
-            Delete All
+            <span className="hidden sm:inline">Delete All</span>
+            <span className="sm:hidden">Delete</span>
           </Button>
 
           {/* More Actions Dropdown */}

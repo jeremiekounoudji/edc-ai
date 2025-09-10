@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Input } from '@heroui/input';
 import { Button } from '@heroui/button';
 import { Switch } from '@heroui/switch';
@@ -95,22 +96,28 @@ export function LeftSidebar({
 
         {/* Collapsed Navigation - Scrollable */}
         <nav className="flex-1 overflow-y-auto space-y-2 p-2">
-          {navigationItems.map((item) => (
-            <Button
+          {navigationItems.map((item, index) => (
+            <motion.div
               key={item.id}
-              isIconOnly
-              variant={item.isActive ? 'solid' : 'light'}
-              color={item.isActive ? 'primary' : 'default'}
-              size="sm"
-              onClick={() => handleNavigationClick(item.id)}
-              className={`h-10 w-10 border-none ${
-                item.isActive 
-                  ? 'bg-primary text-primary-foreground' 
-                  : 'bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground'
-              }`}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.3 }}
             >
-              <item.icon className="h-4 w-4" />
-            </Button>
+              <Button
+                isIconOnly
+                variant={item.isActive ? 'solid' : 'light'}
+                color={item.isActive ? 'primary' : 'default'}
+                size="sm"
+                onClick={() => handleNavigationClick(item.id)}
+                className={`h-10 w-10 border-none transition-all duration-200 ${
+                  item.isActive 
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground'
+                }`}
+              >
+                <item.icon className="h-4 w-4" />
+              </Button>
+            </motion.div>
           ))}
         </nav>
 
@@ -187,25 +194,31 @@ export function LeftSidebar({
 
       {/* Navigation Menu - Scrollable */}
       <nav className="flex-1 overflow-y-auto space-y-2 p-4">
-        {navigationItems.map((item) => (
-          <Button
+        {navigationItems.map((item, index) => (
+          <motion.div
             key={item.id}
-            variant="light"
-            color={item.isActive ? 'primary' : 'default'}
-            size="sm"
-            startContent={<item.icon className="h-4 w-4 flex-shrink-0" />}
-            onClick={() => handleNavigationClick(item.id)}
-            className={`w-full justify-start h-10 px-3 !flex !items-center rounded-lg border-none ${
-              item.isActive 
-                ? 'bg-primary text-primary-foreground font-medium' 
-                : 'text-foreground hover:bg-accent hover:text-accent-foreground bg-transparent'
-            }`}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.1, duration: 0.3 }}
           >
-            <span className="flex-1 text-left text-sm font-medium leading-none">{item.label}</span>
-            {item.hasAdd && (
-              <FiPlus className="h-3 w-3 text-muted-foreground ml-2 flex-shrink-0" />
-            )}
-          </Button>
+            <Button
+              variant="light"
+              color={item.isActive ? 'primary' : 'default'}
+              size="sm"
+              startContent={<item.icon className="h-4 w-4 flex-shrink-0" />}
+              onClick={() => handleNavigationClick(item.id)}
+              className={`w-full justify-start h-10 px-3 !flex !items-center rounded-lg border-none transition-all duration-200 ${
+                item.isActive 
+                  ? 'bg-primary text-primary-foreground font-medium' 
+                  : 'text-foreground hover:bg-accent hover:text-accent-foreground bg-transparent'
+              }`}
+            >
+              <span className="flex-1 text-left text-sm font-medium leading-none">{item.label}</span>
+              {item.hasAdd && (
+                <FiPlus className="h-3 w-3 text-muted-foreground ml-2 flex-shrink-0" />
+              )}
+            </Button>
+          </motion.div>
         ))}
 
         {/* Settings & Help Section */}

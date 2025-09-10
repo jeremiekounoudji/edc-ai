@@ -1,9 +1,11 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 import { Supplier, SupplierSelection } from '../../lib/types/suppliers';
 import { SupplierCard } from './SupplierCard';
+import { SkeletonGrid, LoadingSpinner } from '../ui/LoadingStates';
 
 interface SupplierGridProps {
   suppliers: Supplier[];
@@ -14,6 +16,7 @@ interface SupplierGridProps {
   onDelete: (supplier: Supplier) => void;
   showSelection?: boolean;
   groupBySector?: boolean;
+  isLoading?: boolean;
 }
 
 export function SupplierGrid({
@@ -24,8 +27,11 @@ export function SupplierGrid({
   onContact,
   onDelete,
   showSelection = false,
-  groupBySector = false
+  groupBySector = false,
+  isLoading = false
 }: SupplierGridProps) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
   // Group suppliers by sector if groupBySector is true
   const groupedSuppliers = React.useMemo(() => {
     if (!groupBySector) {
@@ -66,15 +72,46 @@ export function SupplierGrid({
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.1,
+        delayChildren: 0.2
       }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    hidden: { 
+      opacity: 0, 
+      y: 30,
+      scale: 0.95
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15
+      }
+    }
   };
+
+  const groupVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 80,
+        damping: 12
+      }
+    }
+  };
+
+  if (isLoading) {
+    return <SkeletonGrid count={8} />;
+  }
 
   if (suppliers.length === 0) {
     return (
@@ -115,13 +152,14 @@ export function SupplierGrid({
 
       {/* Supplier Groups */}
       <motion.div
+        ref={ref}
         variants={containerVariants}
         initial="hidden"
-        animate="visible"
+        animate={isInView ? "visible" : "hidden"}
         className="space-y-8"
       >
         {groupedSuppliers.map((group) => (
-          <motion.div key={group.sector} variants={itemVariants}>
+          <motion.div key={group.sector} variants={groupVariants}>
             {/* Group Header */}
             {groupBySector && (
               <div className="flex items-center justify-between mb-4">

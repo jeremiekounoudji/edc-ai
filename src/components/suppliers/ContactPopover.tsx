@@ -5,6 +5,7 @@ import { Popover, PopoverTrigger, PopoverContent, Button } from '@heroui/react';
 import { FiMail, FiPhone, FiMessageCircle, FiCopy, FiExternalLink } from 'react-icons/fi';
 import { Supplier, ContactOption } from '../../lib/types/suppliers';
 import { formatPhoneNumber } from '../../lib/utils/formatters';
+import { supplierToasts } from '../../lib/utils/toast';
 
 interface ContactPopoverProps {
   supplier: Supplier;
@@ -45,30 +46,36 @@ export function ContactPopover({
   }
 
   const handleContactAction = (option: ContactOption) => {
-    switch (option.type) {
-      case 'email':
-        // Open email client
-        window.open(`mailto:${option.value}`, '_blank');
-        break;
-      case 'phone':
-        // Open phone dialer
-        window.open(`tel:${option.value}`, '_blank');
-        break;
-      case 'whatsapp':
-        // Open WhatsApp
-        const phoneNumber = option.value.replace(/\D/g, ''); // Remove non-digits
-        window.open(`https://wa.me/${phoneNumber}`, '_blank');
-        break;
+    try {
+      switch (option.type) {
+        case 'email':
+          // Open email client
+          window.open(`mailto:${option.value}`, '_blank');
+          supplierToasts.contactSuccess(supplier.companyName, 'email');
+          break;
+        case 'phone':
+          // Open phone dialer
+          window.open(`tel:${option.value}`, '_blank');
+          supplierToasts.contactSuccess(supplier.companyName, 'phone');
+          break;
+        case 'whatsapp':
+          // Open WhatsApp
+          const phoneNumber = option.value.replace(/\D/g, ''); // Remove non-digits
+          window.open(`https://wa.me/${phoneNumber}`, '_blank');
+          supplierToasts.contactSuccess(supplier.companyName, 'WhatsApp');
+          break;
+      }
+    } catch (error) {
+      supplierToasts.contactError(supplier.companyName, option.type);
     }
     onOpenChange(false);
   };
 
   const handleCopyToClipboard = (value: string, type: string) => {
     navigator.clipboard.writeText(value).then(() => {
-      // You could add a toast notification here
-      console.log(`${type} copied to clipboard:`, value);
+      supplierToasts.contactSuccess(supplier.companyName, `${type} copied`);
     }).catch(err => {
-      console.error('Failed to copy to clipboard:', err);
+      supplierToasts.contactError(supplier.companyName, 'copy to clipboard');
     });
   };
 

@@ -4,6 +4,7 @@ import React from 'react';
 import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@heroui/react';
 import { FiTrash2, FiMoreVertical, FiCheckSquare, FiMail, FiPhone } from 'react-icons/fi';
 import { Supplier } from '../../lib/types/suppliers';
+import { supplierToasts } from '../../lib/utils/toast';
 
 interface SupplierBulkActionsProps {
   selectedSuppliers: Supplier[];
@@ -29,20 +30,35 @@ export function SupplierBulkActions({
   }
 
   const handleBulkDelete = () => {
-    onBulkDelete(selectedSuppliers);
+    try {
+      onBulkDelete(selectedSuppliers);
+      supplierToasts.bulkDeleteSuccess(selectedCount);
+    } catch (error) {
+      supplierToasts.bulkActionError('delete', selectedCount);
+    }
   };
 
   const handleBulkEmail = () => {
-    onBulkEmail(selectedSuppliers);
+    try {
+      onBulkEmail(selectedSuppliers);
+      supplierToasts.bulkEmailSuccess(selectedCount);
+    } catch (error) {
+      supplierToasts.bulkActionError('email', selectedCount);
+    }
   };
 
   const handleBulkCall = () => {
-    onBulkCall(selectedSuppliers);
+    try {
+      onBulkCall(selectedSuppliers);
+      supplierToasts.bulkCallSuccess(selectedCount);
+    } catch (error) {
+      supplierToasts.bulkActionError('call', selectedCount);
+    }
   };
 
   return (
-    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
-      <div className="bg-background border border-border rounded-lg shadow-lg p-4 flex items-center gap-3">
+    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-sm px-4 sm:max-w-none sm:px-0">
+      <div className="bg-background border border-border rounded-lg shadow-lg p-3 sm:p-4 flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
         {/* Selection Info */}
         <div className="flex items-center gap-2 text-sm text-foreground">
           <FiCheckSquare className="h-4 w-4 text-primary" />
@@ -52,7 +68,7 @@ export function SupplierBulkActions({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <Button
             size="sm"
             color="primary"
@@ -60,8 +76,10 @@ export function SupplierBulkActions({
             startContent={<FiMail className="h-4 w-4" />}
             onClick={handleBulkEmail}
             disabled={disabled}
+            className="flex-1 sm:flex-none"
           >
-            Email All
+            <span className="hidden sm:inline">Email All</span>
+            <span className="sm:hidden">Email</span>
           </Button>
 
           <Button
@@ -71,8 +89,10 @@ export function SupplierBulkActions({
             startContent={<FiPhone className="h-4 w-4" />}
             onClick={handleBulkCall}
             disabled={disabled}
+            className="flex-1 sm:flex-none"
           >
-            Call All
+            <span className="hidden sm:inline">Call All</span>
+            <span className="sm:hidden">Call</span>
           </Button>
 
           <Button
@@ -82,8 +102,10 @@ export function SupplierBulkActions({
             startContent={<FiTrash2 className="h-4 w-4" />}
             onClick={handleBulkDelete}
             disabled={disabled}
+            className="flex-1 sm:flex-none"
           >
-            Delete All
+            <span className="hidden sm:inline">Delete All</span>
+            <span className="sm:hidden">Delete</span>
           </Button>
 
           {/* More Actions Dropdown */}

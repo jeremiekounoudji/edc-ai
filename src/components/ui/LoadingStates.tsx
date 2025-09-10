@@ -1,137 +1,197 @@
+'use client';
+
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Spinner } from '@heroui/spinner';
 
-interface LoadingStatesProps {
-  type?: 'spinner' | 'dots' | 'pulse' | 'skeleton';
+interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg';
-  text?: string;
+  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
+  label?: string;
+}
+
+export function LoadingSpinner({ 
+  size = 'md', 
+  color = 'primary', 
+  label = 'Loading...' 
+}: LoadingSpinnerProps) {
+  return (
+    <div className="flex flex-col items-center justify-center py-8 space-y-4">
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+      >
+        <Spinner size={size} color={color} />
+      </motion.div>
+      {label && (
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="text-sm text-muted-foreground"
+        >
+          {label}
+        </motion.p>
+      )}
+    </div>
+  );
+}
+
+interface SkeletonCardProps {
   className?: string;
 }
 
-export function LoadingSpinner({ type = 'spinner', size = 'md', text, className = '' }: LoadingStatesProps) {
-  const sizeClasses = {
-    sm: 'h-4 w-4',
-    md: 'h-6 w-6',
-    lg: 'h-8 w-8',
-  };
-
-  const textSizeClasses = {
-    sm: 'text-xs',
-    md: 'text-sm',
-    lg: 'text-base',
-  };
-
-  if (type === 'dots') {
-    return (
-      <div className={`flex items-center space-x-1 ${className}`}>
-        <div className={`${sizeClasses[size]} bg-primary rounded-full animate-bounce`} style={{ animationDelay: '0ms' }} />
-        <div className={`${sizeClasses[size]} bg-primary rounded-full animate-bounce`} style={{ animationDelay: '150ms' }} />
-        <div className={`${sizeClasses[size]} bg-primary rounded-full animate-bounce`} style={{ animationDelay: '300ms' }} />
-        {text && <span className={`ml-2 ${textSizeClasses[size]} text-muted-foreground`}>{text}</span>}
-      </div>
-    );
-  }
-
-  if (type === 'pulse') {
-    return (
-      <div className={`flex items-center space-x-2 ${className}`}>
-        <div className={`${sizeClasses[size]} bg-primary rounded-full animate-pulse`} />
-        {text && <span className={`${textSizeClasses[size]} text-muted-foreground`}>{text}</span>}
-      </div>
-    );
-  }
-
-  if (type === 'skeleton') {
-    return (
-      <div className={`animate-pulse ${className}`}>
-        <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-        <div className="h-4 bg-muted rounded w-1/2"></div>
-      </div>
-    );
-  }
-
-  // Default spinner
+export function SkeletonCard({ className = '' }: SkeletonCardProps) {
   return (
-    <div className={`flex items-center space-x-2 ${className}`}>
-      <Spinner size={size} color="primary" />
-      {text && <span className={`${textSizeClasses[size]} text-muted-foreground`}>{text}</span>}
-    </div>
-  );
-}
-
-// Chat-specific loading component
-export function ChatLoadingIndicator() {
-  return (
-    <div className="flex justify-start mb-4">
-      <div className="bg-muted rounded-2xl px-4 py-3 max-w-xs">
-        <div className="flex items-center space-x-2">
-          <div className="flex space-x-1">
-            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
-            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+    <div className={`bg-card rounded-lg border p-4 ${className}`}>
+      <div className="space-y-3">
+        {/* Header skeleton */}
+        <div className="flex items-center space-x-3">
+          <motion.div
+            className="h-6 w-6 bg-muted rounded"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          />
+          <div className="space-y-2 flex-1">
+            <motion.div
+              className="h-4 bg-muted rounded w-3/4"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity, delay: 0.1 }}
+            />
+            <motion.div
+              className="h-3 bg-muted rounded w-1/2"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
+            />
           </div>
-          <span className="text-sm text-muted-foreground">AI is thinking...</span>
+        </div>
+        
+        {/* Content skeleton */}
+        <div className="space-y-2">
+          <motion.div
+            className="h-3 bg-muted rounded w-full"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: 0.3 }}
+          />
+          <motion.div
+            className="h-3 bg-muted rounded w-2/3"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}
+          />
+        </div>
+        
+        {/* Actions skeleton */}
+        <div className="flex justify-end space-x-2 pt-2">
+          <motion.div
+            className="h-8 w-20 bg-muted rounded"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: 0.5 }}
+          />
+          <motion.div
+            className="h-8 w-16 bg-muted rounded"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: 0.6 }}
+          />
         </div>
       </div>
     </div>
   );
 }
 
-// Project loading component
-export function ProjectLoadingSkeleton() {
+interface SkeletonGridProps {
+  count?: number;
+  className?: string;
+}
+
+export function SkeletonGrid({ count = 6, className = '' }: SkeletonGridProps) {
   return (
-    <div className="space-y-2 p-4">
-      {Array.from({ length: 3 }).map((_, index) => (
-        <div key={index} className="animate-pulse">
-          <div className="flex items-start space-x-3">
-            <div className="h-4 w-4 bg-muted rounded"></div>
-            <div className="flex-1 space-y-2">
-              <div className="h-4 bg-muted rounded w-3/4"></div>
-              <div className="h-3 bg-muted rounded w-1/2"></div>
-              <div className="h-3 bg-muted rounded w-1/4"></div>
-            </div>
-          </div>
-        </div>
+    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 ${className}`}>
+      {Array.from({ length: count }).map((_, index) => (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1, duration: 0.3 }}
+        >
+          <SkeletonCard />
+        </motion.div>
       ))}
     </div>
   );
 }
 
-// Button loading state
-interface ButtonLoadingStateProps {
-  children: React.ReactNode;
+interface LoadingOverlayProps {
   isLoading: boolean;
-  [key: string]: unknown;
+  children: React.ReactNode;
+  message?: string;
 }
 
-export function ButtonLoadingState({ children, isLoading, ...props }: ButtonLoadingStateProps) {
+export function LoadingOverlay({ isLoading, children, message = 'Loading...' }: LoadingOverlayProps) {
   return (
-    <button
-      {...props}
-      disabled={isLoading || props.disabled}
-      className={`${props.className} ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-    >
-      {isLoading ? (
-        <div className="flex items-center space-x-2">
-          <LoadingSpinner type="spinner" size="sm" />
-          <span>Loading...</span>
-        </div>
-      ) : (
-        children
+    <div className="relative">
+      {children}
+      {isLoading && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50"
+        >
+          <LoadingSpinner label={message} />
+        </motion.div>
       )}
-    </button>
+    </div>
   );
 }
 
-// Page loading overlay
-export function PageLoadingOverlay({ isVisible, text = 'Loading...' }: { isVisible: boolean; text?: string }) {
-  if (!isVisible) return null;
+interface PulseLoaderProps {
+  size?: 'sm' | 'md' | 'lg';
+  color?: string;
+}
+
+export function PulseLoader({ size = 'md', color = 'hsl(var(--primary))' }: PulseLoaderProps) {
+  const sizeClasses = {
+    sm: 'h-2 w-2',
+    md: 'h-3 w-3',
+    lg: 'h-4 w-4'
+  };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-      <div className="text-center">
-        <LoadingSpinner type="spinner" size="lg" text={text} />
-      </div>
+    <div className="flex space-x-1">
+      {[0, 1, 2].map((index) => (
+        <motion.div
+          key={index}
+          className={`${sizeClasses[size]} rounded-full`}
+          style={{ backgroundColor: color }}
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.5, 1, 0.5]
+          }}
+          transition={{
+            duration: 0.6,
+            repeat: Infinity,
+            delay: index * 0.2
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+interface ShimmerEffectProps {
+  className?: string;
+  children: React.ReactNode;
+}
+
+export function ShimmerEffect({ className = '', children }: ShimmerEffectProps) {
+  return (
+    <div className={`relative overflow-hidden ${className}`}>
+      {children}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+        animate={{ x: ['-100%', '100%'] }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+      />
     </div>
   );
 }
