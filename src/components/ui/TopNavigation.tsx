@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from '@heroui/react';
+import { Button } from '@heroui/button';
 import { FiZap, FiUser } from 'react-icons/fi';
 import { UserProfilePopover } from './UserProfilePopover';
 
@@ -10,13 +10,14 @@ interface TopNavigationProps {
     email: string;
     avatar?: string;
   };
+  currentTitle?: string;
 }
 
-export function TopNavigation({ onUpgradeClick, user }: TopNavigationProps) {
+export function TopNavigation({ onUpgradeClick, user, currentTitle = "AI Chat" }: TopNavigationProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo and App Name */}
         <div className="flex items-center space-x-3">
@@ -28,7 +29,7 @@ export function TopNavigation({ onUpgradeClick, user }: TopNavigationProps) {
 
         {/* Center - Current Section Title */}
         <div className="flex-1 text-center">
-          <h2 className="text-lg font-medium text-foreground">AI Chat</h2>
+          <h2 className="text-lg font-medium text-foreground">{currentTitle}</h2>
         </div>
 
         {/* Right Side - Actions */}
@@ -38,11 +39,11 @@ export function TopNavigation({ onUpgradeClick, user }: TopNavigationProps) {
             color="default"
             variant="bordered"
             size="sm"
-            startContent={<FiZap className="h-4 w-4" />}
+            startContent={<FiZap className="h-4 w-4 flex-shrink-0" />}
             onClick={onUpgradeClick}
-            className="bg-black text-white hover:bg-gray-800 border-black"
+            className="bg-black text-white hover:bg-gray-800 border-black !flex !items-center"
           >
-            Upgrade
+            <span className="leading-none">Upgrade</span>
           </Button>
 
           {/* Help Icon */}
@@ -72,7 +73,7 @@ export function TopNavigation({ onUpgradeClick, user }: TopNavigationProps) {
               variant="ghost"
               size="sm"
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
+              className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80 !flex !items-center !justify-center"
             >
               {user?.avatar ? (
                 <img

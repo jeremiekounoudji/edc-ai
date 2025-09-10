@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, Input, Card, CardBody } from '@heroui/react';
+import { Modal, ModalContent, ModalHeader, ModalBody } from '@heroui/modal';
+import { Input } from '@heroui/input';
+import { Card, CardBody } from '@heroui/card';
 import { FiSearch, FiMessageSquare, FiFolder, FiClock } from 'react-icons/fi';
 import { SearchResult } from '../../lib/utils/search';
 import { formatRelativeTime } from '../../lib/utils/common';
@@ -137,6 +139,12 @@ export function GlobalSearchModal({
               size="lg"
               onKeyDown={handleKeyDown}
               autoFocus
+              classNames={{
+                inputWrapper: "!border-2 !rounded-lg !min-h-[48px]"
+              }}
+              style={{
+                borderColor: 'hsl(var(--foreground))'
+              } as React.CSSProperties}
             />
 
             {/* Search Results */}

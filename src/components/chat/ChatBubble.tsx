@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ChatMessage } from '../../lib/types/chat';
-import { FiUser, FiBot } from 'react-icons/fi';
+import { FiUser, FiMessageSquare } from 'react-icons/fi';
 import { formatDate } from '../../lib/utils/common';
 
 interface ChatBubbleProps {
@@ -50,7 +50,7 @@ export function ChatBubble({ message, isStreaming = false, streamingContent }: C
             {isUser ? (
               <FiUser className="h-4 w-4" />
             ) : (
-              <FiBot className="h-4 w-4" />
+              <FiMessageSquare className="h-4 w-4" />
             )}
           </div>
         </div>

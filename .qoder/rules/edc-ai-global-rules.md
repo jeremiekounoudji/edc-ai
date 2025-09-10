@@ -98,6 +98,7 @@ Your mission is to build a **secure, scalable, chat-first web application** that
 * **ALWAYS** use TypeScript interfaces or types explicitly.
 * **ALWAYS** log API calls and user actions with a centralized logger.
 * **NEVER** commit unused code.
+**Always** use context7 mcp or search on web to get the latest documentation when resolving bugs related to external service and package
 
 ---
 

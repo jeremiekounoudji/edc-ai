@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Card, CardBody } from '@heroui/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal';
+import { Button } from '@heroui/button';
+import { Input } from '@heroui/input';
+import { Card, CardBody } from '@heroui/card';
 import { FiSearch, FiCopy, FiCheck } from 'react-icons/fi';
 
 interface Prompt {
@@ -125,6 +128,12 @@ export function BrowsePromptsModal({ isOpen, onClose, onSelectPrompt }: BrowsePr
               onValueChange={setSearchQuery}
               startContent={<FiSearch className="h-4 w-4 text-muted-foreground" />}
               variant="bordered"
+              classNames={{
+                inputWrapper: "!border-2 !rounded-lg !min-h-[40px]"
+              }}
+              style={{
+                borderColor: 'hsl(var(--foreground))'
+              } as React.CSSProperties}
             />
             
             {/* Category Filter */}

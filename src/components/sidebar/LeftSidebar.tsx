@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Input, Button } from '@heroui/react';
+import { Input } from '@heroui/input';
+import { Button } from '@heroui/button';
 import { 
   FiSearch, 
   FiMessageSquare, 
@@ -12,7 +13,11 @@ import {
   FiPlus,
   FiSun,
   FiMoon,
-  FiMonitor
+  FiMonitor,
+  FiTrendingUp,
+  FiUserCheck,
+  FiCheckCircle,
+  FiShield
 } from 'react-icons/fi';
 import { useTheme } from '../../hooks/useTheme';
 
@@ -50,13 +55,14 @@ export function LeftSidebar({
     { id: 'projects', label: 'Projects', icon: FiFolder },
     { id: 'templates', label: 'Templates', icon: FiFileText },
     { id: 'documents', label: 'Documents', icon: FiFileText, hasAdd: true },
-    { id: 'community', label: 'Community', icon: FiUsers, hasNew: true },
-    { id: 'history', label: 'History', icon: FiClock },
+    { id: 'dashboards-reports', label: 'Dashboards & Reports', icon: FiTrendingUp },
+    { id: 'documents-new', label: 'Documents', icon: FiMessageSquare, hasNew: true },
+    { id: 'suppliers', label: 'Suppliers', icon: FiUsers },
+    { id: 'approvals', label: 'Approvals', icon: FiCheckCircle },
   ];
 
   const settingsItems = [
-    { id: 'settings', label: 'Settings', icon: FiSettings },
-    { id: 'help', label: 'Help', icon: FiHelpCircle },
+    { id: 'settings-admin', label: 'Settings & Admin', icon: FiShield },
   ];
 
   const handleSearchChange = (value: string) => {
@@ -149,28 +155,38 @@ export function LeftSidebar({
           variant="bordered"
           size="sm"
           className="w-full"
+          classNames={{
+            inputWrapper: "!border-2 !rounded-lg !min-h-[40px]"
+          }}
+          style={{
+            borderColor: 'hsl(var(--foreground))'
+          } as React.CSSProperties}
         />
         <p className="text-xs text-muted-foreground mt-1">⌘K</p>
       </div>
 
       {/* Navigation Menu */}
-      <nav className="flex-1 space-y-1 p-4">
+      <nav className="flex-1 space-y-2 p-4">
         {navigationItems.map((item) => (
           <Button
             key={item.id}
             variant={item.isActive ? 'solid' : 'ghost'}
             color={item.isActive ? 'primary' : 'default'}
             size="sm"
-            startContent={<item.icon className="h-4 w-4" />}
+            startContent={<item.icon className="h-4 w-4 flex-shrink-0" />}
             onClick={() => handleNavigationClick(item.id)}
-            className="w-full justify-start"
+            className={`w-full justify-start h-10 px-3 !flex !items-center rounded-lg ${
+              item.isActive 
+                ? 'bg-primary text-primary-foreground font-medium' 
+                : 'text-foreground hover:bg-accent hover:text-accent-foreground'
+            }`}
           >
-            <span className="flex-1 text-left">{item.label}</span>
+            <span className="flex-1 text-left text-sm font-medium leading-none">{item.label}</span>
             {item.hasAdd && (
-              <FiPlus className="h-3 w-3 text-muted-foreground" />
+              <FiPlus className="h-3 w-3 text-muted-foreground ml-2 flex-shrink-0" />
             )}
             {item.hasNew && (
-              <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+              <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full ml-2 font-medium flex-shrink-0">
                 NEW
               </span>
             )}
@@ -178,21 +194,21 @@ export function LeftSidebar({
         ))}
 
         {/* Settings & Help Section */}
-        <div className="pt-4">
-          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+        <div className="pt-6">
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-1">
             Settings & Help
           </h3>
-          <div className="space-y-1">
+          <div className="space-y-2">
             {settingsItems.map((item) => (
               <Button
                 key={item.id}
                 variant="ghost"
                 size="sm"
-                startContent={<item.icon className="h-4 w-4" />}
+                startContent={<item.icon className="h-4 w-4 flex-shrink-0" />}
                 onClick={() => handleNavigationClick(item.id)}
-                className="w-full justify-start"
+                className="w-full justify-start h-10 px-3 text-foreground hover:bg-accent hover:text-accent-foreground !flex !items-center rounded-lg"
               >
-                {item.label}
+                <span className="text-sm font-medium leading-none">{item.label}</span>
               </Button>
             ))}
           </div>
@@ -204,27 +220,27 @@ export function LeftSidebar({
         <Button
           variant="ghost"
           size="sm"
-          startContent={<span className="text-lg">{getThemeIcon()}</span>}
+          startContent={<span className="text-lg flex-shrink-0">{getThemeIcon()}</span>}
           onClick={toggleTheme}
-          className="w-full justify-start"
+          className="w-full justify-start h-10 px-3 text-foreground hover:bg-accent hover:text-accent-foreground !flex !items-center rounded-lg"
         >
-          {getThemeLabel()}
+          <span className="text-sm font-medium leading-none">{getThemeLabel()}</span>
         </Button>
       </div>
 
       {/* User Profile Preview */}
       <div className="p-4 border-t border-border">
         <div className="flex items-center space-x-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
-            <span className="text-xs font-medium text-muted-foreground">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+            <span className="text-sm font-semibold text-muted-foreground">
               {currentUser.name.charAt(0)}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-foreground truncate">
+            <p className="text-sm font-semibold text-foreground truncate">
               {currentUser.name}
             </p>
-            <p className="text-xs text-muted-foreground truncate">
+            <p className="text-xs text-muted-foreground truncate mt-0.5">
               {currentUser.email}
             </p>
           </div>

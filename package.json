@@ -9,17 +9,26 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@heroui/avatar": "^2.2.21",
     "@heroui/button": "^2.2.25",
+    "@heroui/calendar": "^2.2.25",
     "@heroui/card": "^2.2.24",
+    "@heroui/checkbox": "^2.3.25",
     "@heroui/input": "^2.4.26",
-    "@heroui/react": "^2.8.3",
+    "@heroui/modal": "^2.2.22",
+    "@heroui/popover": "^2.3.25",
+    "@heroui/react-utils": "^2.1.13",
+    "@heroui/spinner": "^2.2.22",
+    "@heroui/system": "^2.4.21",
+    "@react-stately/utils": "^3.10.8",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.12",
     "next": "15.5.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-icons": "^5.5.0",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "tailwind-variants": "^3.1.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

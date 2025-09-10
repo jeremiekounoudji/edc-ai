@@ -3,6 +3,7 @@ import { TopNavigation } from '../ui/TopNavigation';
 import { LeftSidebar } from '../sidebar/LeftSidebar';
 import { RightSidebar } from '../sidebar/RightSidebar';
 import { FiMenu, FiX } from 'react-icons/fi';
+import { Button } from '@heroui/button';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -18,6 +19,7 @@ interface MainLayoutProps {
   onProjectCreate?: () => void;
   onProjectLoadMore?: () => void;
   onUpgradeClick?: () => void;
+  currentTitle?: string;
 }
 
 export function MainLayout({
@@ -30,10 +32,12 @@ export function MainLayout({
   onProjectCreate,
   onProjectLoadMore,
   onUpgradeClick,
+  currentTitle = "AI Chat",
 }: MainLayoutProps) {
   const [leftSidebarCollapsed, setLeftSidebarCollapsed] = useState(false);
   const [rightSidebarCollapsed, setRightSidebarCollapsed] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileLeftMenuOpen, setMobileLeftMenuOpen] = useState(false);
+  const [mobileRightMenuOpen, setMobileRightMenuOpen] = useState(false);
 
   const toggleLeftSidebar = () => {
     setLeftSidebarCollapsed(!leftSidebarCollapsed);
@@ -43,17 +47,21 @@ export function MainLayout({
     setRightSidebarCollapsed(!rightSidebarCollapsed);
   };
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
+  const toggleMobileLeftMenu = () => {
+    setMobileLeftMenuOpen(!mobileLeftMenuOpen);
+  };
+
+  const toggleMobileRightMenu = () => {
+    setMobileRightMenuOpen(!mobileRightMenuOpen);
   };
 
   return (
     <div className="flex h-screen bg-background">
-      {/* Left Sidebar */}
+      {/* Desktop Left Sidebar */}
       <div
-        className={`transition-all duration-300 ease-in-out ${
+        className={`hidden lg:block transition-all duration-300 ease-in-out ${
           leftSidebarCollapsed ? 'w-16' : 'w-64'
-        } ${mobileMenuOpen ? 'block' : 'hidden lg:block'}`}
+        }`}
       >
         <LeftSidebar
           isCollapsed={leftSidebarCollapsed}
@@ -64,12 +72,34 @@ export function MainLayout({
         />
       </div>
 
-      {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-          onClick={() => setMobileMenuOpen(false)}
-        />
+      {/* Mobile Left Sidebar Overlay */}
+      {mobileLeftMenuOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+            onClick={() => setMobileLeftMenuOpen(false)}
+          />
+          <div className="fixed left-0 top-0 z-50 h-full w-64 bg-background border-r border-border lg:hidden">
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h2 className="text-lg font-semibold">Menu</h2>
+              <Button
+                isIconOnly
+                variant="ghost"
+                size="sm"
+                onClick={() => setMobileLeftMenuOpen(false)}
+              >
+                <FiX className="h-5 w-5" />
+              </Button>
+            </div>
+            <LeftSidebar
+              isCollapsed={false}
+              onToggleCollapse={() => {}}
+              onSearch={onSearch}
+              onNavigate={onNavigate}
+              user={user}
+            />
+          </div>
+        </>
       )}
 
       {/* Main Content Area */}
@@ -78,32 +108,28 @@ export function MainLayout({
         <TopNavigation
           user={user}
           onUpgradeClick={onUpgradeClick}
+          currentTitle={currentTitle}
         />
 
-        {/* Mobile Menu Button */}
-        <div className="lg:hidden flex items-center justify-between p-4 border-b border-border">
+        {/* Mobile Menu Buttons */}
+        <div className="lg:hidden flex items-center justify-between p-3 border-b border-border bg-background">
           <Button
             isIconOnly
             variant="ghost"
             size="sm"
-            onClick={toggleMobileMenu}
+            onClick={toggleMobileLeftMenu}
+            className="text-muted-foreground hover:text-foreground"
           >
             <FiMenu className="h-5 w-5" />
           </Button>
-          <div className="flex items-center space-x-2">
+          
+          <div className="flex items-center space-x-1">
             <Button
               isIconOnly
               variant="ghost"
               size="sm"
-              onClick={toggleLeftSidebar}
-            >
-              <FiMenu className="h-4 w-4" />
-            </Button>
-            <Button
-              isIconOnly
-              variant="ghost"
-              size="sm"
-              onClick={toggleRightSidebar}
+              onClick={toggleMobileRightMenu}
+              className="text-muted-foreground hover:text-foreground"
             >
               <FiMenu className="h-4 w-4" />
             </Button>
@@ -111,17 +137,17 @@ export function MainLayout({
         </div>
 
         {/* Main Content */}
-        <main className="flex flex-1 overflow-hidden">
+        <main className="flex flex-1 overflow-hidden pt-16">
           {/* Chat Area */}
           <div className="flex-1 flex flex-col min-w-0">
             {children}
           </div>
 
-          {/* Right Sidebar */}
+          {/* Desktop Right Sidebar */}
           <div
-            className={`transition-all duration-300 ease-in-out ${
+            className={`hidden lg:block transition-all duration-300 ease-in-out ${
               rightSidebarCollapsed ? 'w-16' : 'w-80'
-            } hidden lg:block`}
+            }`}
           >
             <RightSidebar
               isCollapsed={rightSidebarCollapsed}
@@ -135,28 +161,35 @@ export function MainLayout({
         </main>
       </div>
 
-      {/* Mobile Right Sidebar */}
-      {mobileMenuOpen && (
-        <div className="fixed right-0 top-0 z-50 h-full w-80 bg-background border-l border-border lg:hidden">
-          <div className="flex items-center justify-between p-4 border-b border-border">
-            <h2 className="text-lg font-semibold">Projects</h2>
-            <Button
-              isIconOnly
-              variant="ghost"
-              size="sm"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <FiX className="h-5 w-5" />
-            </Button>
-          </div>
-          <RightSidebar
-            isCollapsed={false}
-            projects={projects}
-            onProjectSelect={onProjectSelect}
-            onProjectCreate={onProjectCreate}
-            onProjectLoadMore={onProjectLoadMore}
+      {/* Mobile Right Sidebar Overlay */}
+      {mobileRightMenuOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+            onClick={() => setMobileRightMenuOpen(false)}
           />
-        </div>
+          <div className="fixed right-0 top-0 z-50 h-full w-80 bg-background border-l border-border lg:hidden">
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h2 className="text-lg font-semibold">Projects</h2>
+              <Button
+                isIconOnly
+                variant="ghost"
+                size="sm"
+                onClick={() => setMobileRightMenuOpen(false)}
+              >
+                <FiX className="h-5 w-5" />
+              </Button>
+            </div>
+            <RightSidebar
+              isCollapsed={false}
+              onToggleCollapse={() => {}}
+              projects={projects}
+              onProjectSelect={onProjectSelect}
+              onProjectCreate={onProjectCreate}
+              onProjectLoadMore={onProjectLoadMore}
+            />
+          </div>
+        </>
       )}
     </div>
   );

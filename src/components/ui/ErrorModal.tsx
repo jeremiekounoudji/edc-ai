@@ -1,5 +1,6 @@
 import React from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@heroui/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal';
+import { Button } from '@heroui/button';
 import { FiAlertTriangle, FiRefreshCw, FiX } from 'react-icons/fi';
 
 interface ErrorModalProps {

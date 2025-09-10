@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Input, Button } from '@heroui/react';
-import { FiPaperclip, FiMic, FiSquare, FiSend } from 'react-icons/fi';
+import { Textarea } from '@heroui/input';
+import { Button } from '@heroui/button';
+import { FiPaperclip, FiMic, FiCommand, FiSend } from 'react-icons/fi';
 
 interface InputBarProps {
   onSendMessage?: (message: string) => void;
@@ -17,13 +18,13 @@ export function InputBar({
   onAttachFile,
   onVoiceMessage,
   onBrowsePrompts,
-  placeholder = "Summarize the latest...",
+  placeholder = "Type a message or ask about procurement, compliance, analytics…",
   maxLength = 3000,
   disabled = false,
 }: InputBarProps) {
   const [message, setMessage] = useState('');
   const [showActionCards, setShowActionCards] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSendMessage = () => {
     if (message.trim() && !disabled) {
@@ -45,11 +46,19 @@ export function InputBar({
   const handleActionCardSelect = (prompt: string) => {
     setMessage(prompt);
     setShowActionCards(false);
-    inputRef.current?.focus();
+    textareaRef.current?.focus();
   };
 
   const characterCount = message.length;
   const isOverLimit = characterCount > maxLength;
+
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
+    }
+  }, [message]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -66,12 +75,12 @@ export function InputBar({
     <div className="relative">
       {/* Action Cards Popover */}
       {showActionCards && (
-        <div className="absolute bottom-full left-0 mb-2 w-full max-w-md action-cards-container">
-          <div className="bg-popover border border-border rounded-lg p-4 shadow-lg">
-            <h3 className="text-sm font-medium text-popover-foreground mb-3">
+        <div className="absolute bottom-full left-0 mb-2 w-full max-w-sm sm:max-w-md action-cards-container">
+          <div className="bg-popover border border-border rounded-lg p-3 sm:p-4 shadow-lg">
+            <h3 className="text-xs sm:text-sm font-medium text-popover-foreground mb-2 sm:mb-3">
               Choose an action:
             </h3>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2">
               {[
                 { label: 'Write copy', prompt: 'Write compelling copy for a product launch announcement' },
                 { label: 'Image generation', prompt: 'Generate an image for a modern tech startup website' },
@@ -83,9 +92,9 @@ export function InputBar({
                   variant="ghost"
                   size="sm"
                   onClick={() => handleActionCardSelect(action.prompt)}
-                  className="justify-start text-left h-auto p-2"
+                  className="justify-start text-left h-auto p-2 text-xs sm:text-sm !flex !items-center"
                 >
-                  <span className="text-xs">{action.label}</span>
+                  <span className="truncate leading-none">{action.label}</span>
                 </Button>
               ))}
             </div>
@@ -93,35 +102,54 @@ export function InputBar({
         </div>
       )}
 
-      {/* Input Container */}
-      <div className="flex items-end space-x-3">
-        {/* Main Input */}
-        <div className="flex-1 relative">
-          <Input
-            ref={inputRef}
-            type="text"
-            placeholder={placeholder}
-            value={message}
-            onValueChange={setMessage}
-            onKeyDown={handleKeyPress}
-            variant="bordered"
-            size="lg"
-            disabled={disabled}
-            className="w-full"
-            classNames={{
-              input: "pr-20",
+      {/* Main Input Container - 2-Line Layout */}
+      <div className="bg-background border border-border rounded-2xl p-3 shadow-lg space-y-3">
+        {/* First Line - Text Input + Character Count + Send Button */}
+        <div className="flex items-end space-x-3">
+          {/* Text Input - Full Width */}
+          <div className="flex-1 min-w-0">
+            <textarea
+              ref={textareaRef}
+              placeholder={placeholder}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyPress}
+              disabled={disabled}
+              rows={1}
+            className="w-full resize-none bg-transparent border-0 outline-none text-sm sm:text-base text-left placeholder:text-muted-foreground disabled:opacity-50 py-2 focus:outline-none focus:ring-0 focus:border-0"
+            style={{
+              minHeight: '40px',
+              maxHeight: '120px',
+              height: 'auto',
+              width: '100%',
+              display: 'block',
+              outline: 'none',
+              border: 'none',
+              boxShadow: 'none'
             }}
-          />
-          
-          {/* Character Count */}
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+            />
+          </div>
+
+          {/* Character Count + Send Button */}
+          <div className="flex items-center space-x-2 flex-shrink-0">
             <span className={`text-xs ${isOverLimit ? 'text-destructive' : 'text-muted-foreground'}`}>
               {characterCount}/{maxLength}
             </span>
+            <Button
+              isIconOnly
+              variant="solid"
+              color="primary"
+              size="sm"
+              onClick={handleSendMessage}
+              disabled={disabled || !message.trim() || isOverLimit}
+              className="bg-primary text-primary-foreground hover:bg-primary/90 h-8 w-8 !flex !items-center !justify-center rounded-lg"
+            >
+              <FiSend className="h-4 w-4" />
+            </Button>
           </div>
         </div>
 
-        {/* Action Buttons */}
+        {/* Second Line - Action Buttons (Left Aligned) */}
         <div className="flex items-center space-x-2">
           <Button
             isIconOnly
@@ -129,7 +157,7 @@ export function InputBar({
             size="sm"
             onClick={onAttachFile}
             disabled={disabled}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg !flex !items-center !justify-center"
           >
             <FiPaperclip className="h-4 w-4" />
           </Button>
@@ -140,7 +168,7 @@ export function InputBar({
             size="sm"
             onClick={onVoiceMessage}
             disabled={disabled}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg !flex !items-center !justify-center"
           >
             <FiMic className="h-4 w-4" />
           </Button>
@@ -151,21 +179,9 @@ export function InputBar({
             size="sm"
             onClick={onBrowsePrompts}
             disabled={disabled}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg !flex !items-center !justify-center"
           >
-            <FiSquare className="h-4 w-4" />
-          </Button>
-
-          <Button
-            isIconOnly
-            variant="solid"
-            color="primary"
-            size="sm"
-            onClick={handleSendMessage}
-            disabled={disabled || !message.trim() || isOverLimit}
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
-          >
-            <FiSend className="h-4 w-4" />
+            <FiCommand className="h-4 w-4" />
           </Button>
         </div>
       </div>

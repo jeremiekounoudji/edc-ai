@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@heroui/react';
+import { Button } from '@heroui/button';
 import { FiEdit3, FiTrash2, FiCopy, FiShare, FiMoreHorizontal } from 'react-icons/fi';
 import { Project } from '../../lib/types/project';
 

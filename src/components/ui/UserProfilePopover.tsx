@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@heroui/react';
+import { Button } from '@heroui/button';
 import { FiUser, FiSettings, FiLogOut, FiEdit3 } from 'react-icons/fi';
 
 interface UserProfilePopoverProps {
@@ -35,9 +35,9 @@ export function UserProfilePopover({
   };
 
   return (
-    <div className="absolute right-0 top-12 z-50 w-80 rounded-lg border border-border bg-popover p-4 shadow-lg">
+    <div className="absolute right-0 top-12 z-50 w-80 rounded-lg border border-border bg-popover p-5 shadow-lg">
       {/* User Info */}
-      <div className="flex items-center space-x-3 pb-4 border-b border-border">
+      <div className="flex items-center space-x-4 pb-5 border-b border-border">
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
           {currentUser.avatar ? (
             <img
@@ -50,46 +50,46 @@ export function UserProfilePopover({
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-medium text-popover-foreground truncate">
+          <h3 className="text-base font-semibold text-popover-foreground truncate">
             {currentUser.name}
           </h3>
-          <p className="text-xs text-muted-foreground truncate">
+          <p className="text-sm text-muted-foreground truncate mt-1">
             {currentUser.email}
           </p>
         </div>
       </div>
 
       {/* Menu Items */}
-      <div className="mt-4 space-y-1">
+      <div className="mt-5 space-y-2">
         <Button
           variant="ghost"
           size="sm"
-          startContent={<FiSettings className="h-4 w-4" />}
+          startContent={<FiSettings className="h-4 w-4 flex-shrink-0" />}
           onClick={() => handleMenuItemClick(onSettingsClick)}
-          className="w-full justify-start text-popover-foreground hover:bg-accent hover:text-accent-foreground"
+          className="w-full justify-start h-11 px-3 text-popover-foreground hover:bg-accent hover:text-accent-foreground !flex !items-center"
         >
-          Settings
+          <span className="text-sm font-medium leading-none">Settings</span>
         </Button>
 
         <Button
           variant="ghost"
           size="sm"
-          startContent={<FiEdit3 className="h-4 w-4" />}
+          startContent={<FiEdit3 className="h-4 w-4 flex-shrink-0" />}
           onClick={() => handleMenuItemClick(onEditProfileClick)}
-          className="w-full justify-start text-popover-foreground hover:bg-accent hover:text-accent-foreground"
+          className="w-full justify-start h-11 px-3 text-popover-foreground hover:bg-accent hover:text-accent-foreground !flex !items-center"
         >
-          Edit Profile
+          <span className="text-sm font-medium leading-none">Edit Profile</span>
         </Button>
 
-        <div className="border-t border-border pt-1 mt-2">
+        <div className="border-t border-border pt-3 mt-3">
           <Button
             variant="ghost"
             size="sm"
-            startContent={<FiLogOut className="h-4 w-4" />}
+            startContent={<FiLogOut className="h-4 w-4 flex-shrink-0" />}
             onClick={() => handleMenuItemClick(onLogoutClick)}
-            className="w-full justify-start text-destructive hover:bg-destructive/10 hover:text-destructive"
+            className="w-full justify-start h-11 px-3 text-destructive hover:bg-destructive/10 hover:text-destructive !flex !items-center"
           >
-            Logout
+            <span className="text-sm font-medium leading-none">Logout</span>
           </Button>
         </div>
       </div>

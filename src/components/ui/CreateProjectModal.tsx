@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Textarea } from '@heroui/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal';
+import { Button } from '@heroui/button';
+import { Input } from '@heroui/input';
+import { Textarea } from '@heroui/input';
 import { FiFolder, FiX } from 'react-icons/fi';
 
 interface CreateProjectModalProps {
@@ -42,11 +45,11 @@ export function CreateProjectModal({ isOpen, onClose, onCreateProject }: CreateP
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} size="md">
-      <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">
+    <Modal isOpen={isOpen} onClose={handleClose} size="md" className='p-5 border-2 border-border rounded-lg'>
+      <ModalContent className="bg-background">
+        <ModalHeader className="flex flex-col gap-1 my-5">
           <div className="flex items-center space-x-2">
-            <FiFolder className="h-5 w-5 text-primary" />
+            <FiFolder className="h-5 w-5 text-primary " />
             <h2 className="text-xl font-semibold">Create New Project</h2>
           </div>
           <p className="text-sm text-muted-foreground">
@@ -58,7 +61,6 @@ export function CreateProjectModal({ isOpen, onClose, onCreateProject }: CreateP
           <div className="space-y-4">
             <Input
               type="text"
-              label="Project Title"
               placeholder="Enter project title..."
               value={title}
               onValueChange={setTitle}
@@ -67,10 +69,17 @@ export function CreateProjectModal({ isOpen, onClose, onCreateProject }: CreateP
               maxLength={100}
               onKeyDown={handleKeyPress}
               autoFocus
+              classNames={{
+                inputWrapper: "!border-2 !rounded-lg !min-h-[48px] focus-within:!outline-none",
+                input: "focus:!outline-none focus:!ring-0 focus:!border-0"
+              }}
+              style={{
+                borderColor: 'hsl(var(--foreground))',
+                outline: 'none'
+              } as React.CSSProperties}
             />
             
             <Textarea
-              label="Description"
               placeholder="Describe what this project is about..."
               value={description}
               onValueChange={setDescription}
@@ -79,6 +88,14 @@ export function CreateProjectModal({ isOpen, onClose, onCreateProject }: CreateP
               minRows={3}
               maxRows={6}
               onKeyDown={handleKeyPress}
+              classNames={{
+                inputWrapper: "!border-2 !rounded-lg focus-within:!outline-none",
+                input: "focus:!outline-none focus:!ring-0 focus:!border-0"
+              }}
+              style={{
+                borderColor: 'hsl(var(--foreground))',
+                outline: 'none'
+              } as React.CSSProperties}
             />
             
             <div className="text-xs text-muted-foreground">
@@ -94,6 +111,7 @@ export function CreateProjectModal({ isOpen, onClose, onCreateProject }: CreateP
             Cancel
           </Button>
           <Button
+            className='rounded-md'
             color="primary"
             onClick={handleCreate}
             isLoading={isLoading}

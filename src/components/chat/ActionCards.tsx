@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardBody } from '@heroui/react';
+import { Card, CardBody } from '@heroui/card';
 import { FiFileText, FiImage, FiUser, FiCode } from 'react-icons/fi';
 import { ActionCard } from '../../lib/types/chat';
 
@@ -50,10 +50,17 @@ const iconMap = {
 };
 
 const colorClasses = {
-  orange: 'bg-action-orange-500 hover:bg-action-orange-600 text-white',
-  blue: 'bg-action-blue-500 hover:bg-action-blue-600 text-white',
-  green: 'bg-action-green-500 hover:bg-action-green-600 text-white',
-  pink: 'bg-action-pink-500 hover:bg-action-pink-600 text-white',
+  orange: 'text-white',
+  blue: 'text-white',
+  green: 'text-white',
+  pink: 'text-white',
+};
+
+const colorStyles = {
+  orange: { backgroundColor: 'hsl(var(--action-orange))' },
+  blue: { backgroundColor: 'hsl(var(--action-blue))' },
+  green: { backgroundColor: 'hsl(var(--action-green))' },
+  pink: { backgroundColor: 'hsl(var(--action-pink))' },
 };
 
 export function ActionCards({ onActionCardClick }: ActionCardsProps) {
@@ -62,7 +69,7 @@ export function ActionCards({ onActionCardClick }: ActionCardsProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <>
       {actionCards.map((card) => {
         const IconComponent = iconMap[card.icon as keyof typeof iconMap];
         
@@ -70,26 +77,27 @@ export function ActionCards({ onActionCardClick }: ActionCardsProps) {
           <Card
             key={card.id}
             isPressable
-            className={`transition-all duration-200 hover:scale-105 hover:shadow-lg ${colorClasses[card.color]}`}
+            className={`transition-all duration-200 hover:scale-105 hover:shadow-lg ${colorClasses[card.color]} w-full rounded-xl`}
+            style={colorStyles[card.color]}
             onClick={() => handleCardClick(card)}
           >
-            <CardBody className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/20">
-                  <IconComponent className="h-6 w-6" />
+            <CardBody className="p-4 sm:p-6">
+              <div className="flex items-center space-x-3 sm:space-x-4">
+                <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-white/20 flex-shrink-0">
+                  <IconComponent className="h-5 w-5 sm:h-6 sm:w-6" />
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold mb-1">{card.title}</h3>
-                  <p className="text-sm opacity-90">{card.description}</p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-base sm:text-lg font-semibold mb-1 truncate">{card.title}</h3>
+                  <p className="text-xs sm:text-sm opacity-90 line-clamp-2">{card.description}</p>
                 </div>
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20">
-                  <span className="text-lg font-bold">+</span>
+                <div className="flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white/20 flex-shrink-0">
+                  <span className="text-sm sm:text-lg font-bold">+</span>
                 </div>
               </div>
             </CardBody>
           </Card>
         );
       })}
-    </div>
+    </>
   );
 }

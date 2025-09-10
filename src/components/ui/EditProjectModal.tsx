@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Textarea } from '@heroui/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal';
+import { Button } from '@heroui/button';
+import { Input } from '@heroui/input';
+import { Textarea } from '@heroui/input';
 import { FiFolder, FiTrash2 } from 'react-icons/fi';
 import { Project } from '../../lib/types/project';
 
@@ -107,6 +110,12 @@ export function EditProjectModal({
                 maxLength={100}
                 onKeyDown={handleKeyPress}
                 autoFocus
+                classNames={{
+                  inputWrapper: "!border-2 !rounded-lg !min-h-[48px]"
+                }}
+                style={{
+                  borderColor: 'hsl(var(--foreground))'
+                } as React.CSSProperties}
               />
               
               <Textarea
@@ -119,6 +128,12 @@ export function EditProjectModal({
                 minRows={3}
                 maxRows={6}
                 onKeyDown={handleKeyPress}
+                classNames={{
+                  inputWrapper: "!border-2 !rounded-lg"
+                }}
+                style={{
+                  borderColor: 'hsl(var(--foreground))'
+                } as React.CSSProperties}
               />
               
               <div className="text-xs text-muted-foreground">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spinner } from '@heroui/react';
+import { Spinner } from '@heroui/spinner';
 
 interface LoadingStatesProps {
   type?: 'spinner' | 'dots' | 'pulse' | 'skeleton';

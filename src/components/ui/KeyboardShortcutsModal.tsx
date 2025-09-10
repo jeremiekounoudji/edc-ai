@@ -1,5 +1,7 @@
 import React from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Card, CardBody } from '@heroui/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal';
+import { Button } from '@heroui/button';
+import { Card, CardBody } from '@heroui/card';
 import { FiKeyboard, FiX } from 'react-icons/fi';
 
 interface KeyboardShortcutsModalProps {
