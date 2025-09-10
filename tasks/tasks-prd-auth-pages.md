@@ -5,10 +5,10 @@ Based on the PRD for authentication pages, here are the detailed tasks required 
 ## Relevant Files
 
 - `src/app/auth/login/page.tsx` - Main login page component with email/password and Google OAuth ✅
-- `src/app/auth/register/page.tsx` - Registration page component with role selection
+- `src/app/auth/register/page.tsx` - Registration page component with role selection ✅
 - `src/app/auth/forgot-password/page.tsx` - Forgot password page component
 - `src/components/auth/LoginForm.tsx` - Reusable login form component ✅
-- `src/components/auth/RegisterForm.tsx` - Reusable registration form component
+- `src/components/auth/RegisterForm.tsx` - Reusable registration form component ✅
 - `src/components/auth/ForgotPasswordForm.tsx` - Forgot password form component
 - `src/components/auth/OTPModal.tsx` - OTP verification modal component
 - `src/lib/auth/validation.ts` - Authentication form validation utilities ✅
@@ -45,18 +45,18 @@ Based on the PRD for authentication pages, here are the detailed tasks required 
   - [x] 2.9 Add responsive design for mobile and desktop
   - [x] 2.10 Write unit tests for LoginForm component
 
-- [ ] 3.0 Implement Registration Page with Role Selection
-  - [ ] 3.1 Create RegisterForm component with all required fields using Hero UI
-  - [ ] 3.2 Implement email, password, confirm password, first name, last name fields
-  - [ ] 3.3 Create role dropdown with options: Admin, Moderator, Manager, Employee, Procurement Officer, Financer, Legal
-  - [ ] 3.4 Implement email format and uniqueness validation
-  - [ ] 3.5 Implement password confirmation matching validation
-  - [ ] 3.6 Add "Register with Google" button using Hero UI components
-  - [ ] 3.7 Implement form submission handling with loading states
-  - [ ] 3.8 Create registration page wrapper component (`src/app/auth/register/page.tsx`)
-  - [ ] 3.9 Implement redirect to main page after successful registration
-  - [ ] 3.10 Add responsive design for mobile and desktop
-  - [ ] 3.11 Write unit tests for RegisterForm component
+- [x] 3.0 Implement Registration Page with Role Selection
+  - [x] 3.1 Create RegisterForm component with all required fields using Hero UI
+  - [x] 3.2 Implement email, password, confirm password, first name, last name fields
+  - [x] 3.3 Create role dropdown with options: Admin, Moderator, Manager, Employee, Procurement Officer, Financer, Legal
+  - [x] 3.4 Implement email format and uniqueness validation
+  - [x] 3.5 Implement password confirmation matching validation
+  - [x] 3.6 Add "Register with Google" button using Hero UI components
+  - [x] 3.7 Implement form submission handling with loading states
+  - [x] 3.8 Create registration page wrapper component (`src/app/auth/register/page.tsx`)
+  - [x] 3.9 Implement redirect to main page after successful registration
+  - [x] 3.10 Add responsive design for mobile and desktop
+  - [x] 3.11 Write unit tests for RegisterForm component
 
 - [ ] 4.0 Implement Forgot Password Page
   - [ ] 4.1 Create ForgotPasswordForm component with email field using Hero UI
