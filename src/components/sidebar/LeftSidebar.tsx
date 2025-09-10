@@ -21,6 +21,7 @@ import {
   FiShield
 } from 'react-icons/fi';
 import { useTheme } from '../../hooks/useTheme';
+import { ActiveTab } from '../layout/MainLayout';
 
 interface LeftSidebarProps {
   isCollapsed?: boolean;
@@ -32,6 +33,8 @@ interface LeftSidebarProps {
     email: string;
     avatar?: string;
   };
+  activeTab?: ActiveTab;
+  onTabChange?: (tab: ActiveTab) => void;
 }
 
 export function LeftSidebar({ 
@@ -39,7 +42,9 @@ export function LeftSidebar({
   onToggleCollapse,
   onSearch,
   onNavigate,
-  user 
+  user,
+  activeTab = 'ai-chat',
+  onTabChange
 }: LeftSidebarProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const { currentTheme, toggleTheme, getThemeIcon, getThemeLabel } = useTheme();
@@ -52,13 +57,13 @@ export function LeftSidebar({
   const currentUser = user || defaultUser;
 
   const navigationItems = [
-    { id: 'ai-chat', label: 'AI Chat', icon: FiMessageSquare, isActive: true },
-    { id: 'projects', label: 'Projects', icon: FiFolder },
-    { id: 'templates', label: 'Templates', icon: FiFileText },
-    { id: 'documents', label: 'Documents', icon: FiFileText, hasAdd: true },
-    { id: 'dashboards-reports', label: 'Dashboards & Reports', icon: FiTrendingUp },
-    { id: 'suppliers', label: 'Suppliers', icon: FiUsers },
-    { id: 'approvals', label: 'Approvals', icon: FiCheckCircle },
+    { id: 'ai-chat', label: 'AI Chat', icon: FiMessageSquare, isActive: activeTab === 'ai-chat' },
+    { id: 'projects', label: 'Projects', icon: FiFolder, isActive: false },
+    { id: 'templates', label: 'Templates', icon: FiFileText, isActive: false },
+    { id: 'documents', label: 'Documents', icon: FiFileText, hasAdd: true, isActive: activeTab === 'documents' },
+    { id: 'dashboards-reports', label: 'Dashboards & Reports', icon: FiTrendingUp, isActive: false },
+    { id: 'suppliers', label: 'Suppliers', icon: FiUsers, isActive: activeTab === 'suppliers' },
+    { id: 'approvals', label: 'Approvals', icon: FiCheckCircle, isActive: false },
   ];
 
   const settingsItems = [
@@ -71,6 +76,10 @@ export function LeftSidebar({
   };
 
   const handleNavigationClick = (itemId: string) => {
+    // Handle tab switching for documents and suppliers
+    if (itemId === 'documents' || itemId === 'suppliers' || itemId === 'ai-chat') {
+      onTabChange?.(itemId as ActiveTab);
+    }
     onNavigate?.(itemId);
   };
 

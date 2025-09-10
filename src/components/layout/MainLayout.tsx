@@ -2,9 +2,13 @@ import React, { useState } from 'react';
 import { TopNavigation } from '../ui/TopNavigation';
 import { LeftSidebar } from '../sidebar/LeftSidebar';
 import { RightSidebar } from '../sidebar/RightSidebar';
+import { TabContent } from './TabContent';
 import { FiMenu, FiX } from 'react-icons/fi';
 import { Button } from '@heroui/button';
 import { Project } from '../../lib/types/project';
+import { useNavigation } from '../../context/NavigationContext';
+
+export type ActiveTab = 'ai-chat' | 'documents' | 'suppliers';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -35,6 +39,7 @@ export function MainLayout({
   onUpgradeClick,
   currentTitle = "AI Chat",
 }: MainLayoutProps) {
+  const { activeTab, navigateToTab } = useNavigation();
   const [leftSidebarCollapsed, setLeftSidebarCollapsed] = useState(false);
   const [rightSidebarCollapsed, setRightSidebarCollapsed] = useState(false);
   const [mobileLeftMenuOpen, setMobileLeftMenuOpen] = useState(false);
@@ -70,6 +75,8 @@ export function MainLayout({
           onSearch={onSearch}
           onNavigate={onNavigate}
           user={user}
+          activeTab={activeTab}
+          onTabChange={navigateToTab}
         />
       </div>
 
@@ -98,6 +105,8 @@ export function MainLayout({
               onSearch={onSearch}
               onNavigate={onNavigate}
               user={user}
+              activeTab={activeTab}
+              onTabChange={navigateToTab}
             />
           </div>
         </>
@@ -141,9 +150,11 @@ export function MainLayout({
 
         {/* Main Content */}
         <main className="flex flex-1 overflow-hidden">
-          {/* Chat Area */}
+          {/* Content Area */}
           <div className="flex-1 flex flex-col min-w-0">
-            {children}
+            <TabContent activeTab={activeTab}>
+              {children}
+            </TabContent>
           </div>
 
           {/* Desktop Right Sidebar */}

@@ -56,13 +56,13 @@
   - [x] 3.7 Add confirmation dialogs for delete operations
   - [x] 3.8 Create main Suppliers page component that integrates all supplier components
   - [x] 3.9 ~~Test supplier components with Playwright MCP for UI interactions and contact popover functionality~~ (Skipped per user request)
-- [ ] 4.0 Implement Navigation and Layout Integration
-  - [ ] 4.1 Update MainLayout component to handle tab switching between chat/documents/suppliers
-  - [ ] 4.2 Modify LeftSidebar navigation to properly route to documents and suppliers pages
-  - [ ] 4.3 Implement state management for active tab and content switching
-  - [ ] 4.4 Create custom hooks (useDocuments, useSuppliers) for state management
-  - [ ] 4.5 Add proper TypeScript types for navigation state
-  - [ ] 4.6 Test navigation flow with Playwright MCP to ensure smooth tab switching
+- [x] 4.0 Implement Navigation and Layout Integration
+  - [x] 4.1 Update MainLayout component to handle tab switching between chat/documents/suppliers
+  - [x] 4.2 Modify LeftSidebar navigation to properly route to documents and suppliers pages
+  - [x] 4.3 Implement state management for active tab and content switching
+  - [x] 4.4 Create custom hooks (useDocuments, useSuppliers) for state management
+  - [x] 4.5 Add proper TypeScript types for navigation state
+  - [x] 4.6 ~~Test navigation flow with Playwright MCP to ensure smooth tab switching~~ (Skipped per user request)
 - [ ] 5.0 Add Animations and Polish
   - [ ] 5.1 Implement Framer Motion scroll-triggered animations for card reveals
   - [ ] 5.2 Add smooth transitions between tab switches
