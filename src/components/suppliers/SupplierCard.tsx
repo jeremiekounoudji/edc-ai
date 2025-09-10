@@ -1,12 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardBody, CardHeader, Button, Chip } from '@heroui/react';
 import { FiMessageCircle, FiMail, FiPhone, FiGlobe, FiMapPin } from 'react-icons/fi';
 import { Supplier } from '../../lib/types/suppliers';
 import { formatRating, getRatingColor, getRatingBadgeColor, formatCompanyName, getCompanyInitials } from '../../lib/utils/formatters';
 import { supplierToasts } from '../../lib/utils/toast';
+import { ContactPopover } from './ContactPopover';
 
 interface SupplierCardProps {
   supplier: Supplier;
@@ -25,13 +26,14 @@ export function SupplierCard({
   onDelete,
   showSelection = false
 }: SupplierCardProps) {
+  const [isContactPopoverOpen, setIsContactPopoverOpen] = useState(false);
+
   const handleSelect = (checked: boolean) => {
     onSelect?.(supplier.id, checked);
   };
 
   const handleContactClick = () => {
-    // This will be handled by the ContactPopover component
-    console.log('Contact button clicked for:', supplier.companyName);
+    setIsContactPopoverOpen(true);
   };
 
   const handleDelete = () => {
@@ -57,39 +59,76 @@ export function SupplierCard({
       className="w-full"
     >
       <Card 
-        className={`w-full transition-all duration-200 hover:shadow-lg ${
+        className={`w-full h-80 transition-all duration-200 hover:shadow-lg bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 ${
           isSelected ? 'ring-2 ring-primary' : ''
         }`}
       >
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <div className="flex items-center space-x-3">
-          {showSelection && (
-            <input
-              type="checkbox"
-              checked={isSelected}
-              onChange={(e) => handleSelect(e.target.checked)}
-              className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+        <CardBody className="p-6 flex flex-col h-full">
+          {/* Header Section */}
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              {showSelection && (
+                <input
+                  type="checkbox"
+                  checked={isSelected}
+                  onChange={(e) => handleSelect(e.target.checked)}
+                  className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                />
+              )}
+              
+              {/* Company Avatar */}
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-xl">
+                {supplier.avatar ? (
+                  <img 
+                    src={supplier.avatar} 
+                    alt={supplier.companyName}
+                    className="h-16 w-16 rounded-full object-cover"
+                  />
+                ) : (
+                  getCompanyInitials(supplier.companyName)
+                )}
+              </div>
+
+              <div className="flex flex-col">
+                <h3 className="text-lg font-bold text-foreground">
+                  {formatCompanyName(supplier.companyName, 20)}
+                </h3>
+                <span className="text-sm text-muted-foreground">
+                  @{supplier.domain.toLowerCase().replace(/[^a-z0-9]/g, '')}
+                </span>
+              </div>
+            </div>
+
+            {/* Contact Button with Popover */}
+            <ContactPopover
+              supplier={supplier}
+              isOpen={isContactPopoverOpen}
+              onOpenChange={setIsContactPopoverOpen}
+              trigger={
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    size="sm"
+                    color="primary"
+                    variant="solid"
+                    className="px-4 py-2 rounded-full font-medium transition-all duration-200"
+                    onClick={handleContactClick}
+                  >
+                    Contact
+                  </Button>
+                </motion.div>
+              }
             />
-          )}
-          
-          {/* Company Avatar */}
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold text-lg">
-            {supplier.avatar ? (
-              <img 
-                src={supplier.avatar} 
-                alt={supplier.companyName}
-                className="h-12 w-12 rounded-full object-cover"
-              />
-            ) : (
-              getCompanyInitials(supplier.companyName)
-            )}
           </div>
 
-          <div className="flex flex-col">
-            <h3 className="text-sm font-semibold text-foreground">
-              {formatCompanyName(supplier.companyName, 25)}
-            </h3>
-            <div className="flex items-center gap-2 mt-1">
+          {/* Bio Section */}
+          <div className="mb-4 flex-1">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {supplier.description}
+            </p>
+            <div className="flex items-center gap-2 mt-2">
               <Chip
                 size="sm"
                 variant="flat"
@@ -99,103 +138,26 @@ export function SupplierCard({
                 {supplier.sector}
               </Chip>
               <span className="text-xs text-muted-foreground">
-                {supplier.domain}
+                {supplier.establishedYear && `Est. ${supplier.establishedYear}`}
               </span>
             </div>
           </div>
-        </div>
 
-        {/* Rating */}
-        <div className="flex flex-col items-end">
-          <Chip
-            size="sm"
-            color={ratingBadgeColor}
-            variant="flat"
-            className="text-xs font-medium"
-          >
-            {formatRating(supplier.rating)}
-          </Chip>
-        </div>
-      </CardHeader>
-      
-      <CardBody className="pt-0">
-        <div className="space-y-3">
-          {/* Description */}
-          <p className="text-xs text-muted-foreground line-clamp-2">
-            {supplier.description}
-          </p>
-
-          {/* Company Details */}
-          <div className="space-y-1">
-            {supplier.establishedYear && (
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <FiGlobe className="h-3 w-3" />
-                <span>Est. {supplier.establishedYear}</span>
+          {/* Statistics Section */}
+          <div className="flex items-center justify-between pt-4 border-t border-border">
+            <div className="flex items-center space-x-4">
+              <div className="text-sm text-muted-foreground">
+                <span className="font-semibold text-foreground">{supplier.rating}%</span> Recommended
               </div>
-            )}
-            
-            {supplier.address && (
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <FiMapPin className="h-3 w-3" />
-                <span className="truncate">
-                  {supplier.address.city}, {supplier.address.country}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Contact Actions */}
-          <div className="flex justify-between items-center pt-2">
-            <div className="flex gap-1">
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <Button
-                  size="sm"
-                  variant="light"
-                  color="primary"
-                  isIconOnly
-                  onClick={() => onContact?.(supplier, 'email')}
-                  className="h-8 w-8 transition-all duration-200 hover:bg-primary/10"
-                >
-                  <FiMail className="h-4 w-4" />
-                </Button>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <Button
-                  size="sm"
-                  variant="light"
-                  color="success"
-                  isIconOnly
-                  onClick={() => onContact?.(supplier, 'phone')}
-                  className="h-8 w-8 transition-all duration-200 hover:bg-success/10"
-                >
-                  <FiPhone className="h-4 w-4" />
-                </Button>
-              </motion.div>
-              {supplier.contact.whatsapp && (
-                <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Button
-                    size="sm"
-                    variant="light"
-                    color="success"
-                    isIconOnly
-                    onClick={() => onContact?.(supplier, 'whatsapp')}
-                    className="h-8 w-8 transition-all duration-200 hover:bg-success/10"
-                  >
-                    <FiMessageCircle className="h-4 w-4" />
-                  </Button>
-                </motion.div>
+              {supplier.address && (
+                <div className="text-sm text-muted-foreground">
+                  <FiMapPin className="h-3 w-3 inline mr-1" />
+                  {supplier.address.city}
+                </div>
               )}
             </div>
 
+            {/* Delete Button */}
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -205,15 +167,14 @@ export function SupplierCard({
                 variant="light"
                 color="danger"
                 onClick={handleDelete}
-                className="h-8 px-2 text-xs transition-all duration-200 hover:bg-danger/10"
+                className="text-xs transition-all duration-200 hover:bg-danger/10"
               >
                 Delete
               </Button>
             </motion.div>
           </div>
-        </div>
-      </CardBody>
-    </Card>
+        </CardBody>
+      </Card>
     </motion.div>
   );
 }
