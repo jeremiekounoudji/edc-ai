@@ -37,15 +37,15 @@
   - [x] 1.3 Generate mock supplier data with company info, ratings, and contact details in `src/lib/mockData/suppliers.ts`
   - [x] 1.4 Create utility functions for data formatting (file size formatting, date formatting, rating display)
   - [x] 1.5 ~~Test mock data structure and utility functions with unit tests~~ (Skipped per user request)
-- [ ] 2.0 Create Document Management Components
-  - [ ] 2.1 Build DocumentCard component with filename, size, download/delete buttons using Hero UI Card
-  - [ ] 2.2 Implement DocumentGrid component with responsive grid layout and type-based grouping
-  - [ ] 2.3 Create DocumentFilters component with search input and type filter dropdown
-  - [ ] 2.4 Add pagination component for documents (20 items per page)
-  - [ ] 2.5 Implement bulk selection functionality for multiple documents
-  - [ ] 2.6 Add confirmation dialogs for delete operations
-  - [ ] 2.7 Create main Documents page component that integrates all document components
-  - [ ] 2.8 Test document components with Playwright MCP for UI interactions and responsive behavior
+- [x] 2.0 Create Document Management Components
+  - [x] 2.1 Build DocumentCard component with filename, size, download/delete buttons using Hero UI Card
+  - [x] 2.2 Implement DocumentGrid component with responsive grid layout and type-based grouping
+  - [x] 2.3 Create DocumentFilters component with search input and type filter dropdown
+  - [x] 2.4 Add pagination component for documents (20 items per page)
+  - [x] 2.5 Implement bulk selection functionality for multiple documents
+  - [x] 2.6 Add confirmation dialogs for delete operations
+  - [x] 2.7 Create main Documents page component that integrates all document components
+  - [x] 2.8 ~~Test document components with Playwright MCP for UI interactions and responsive behavior~~ (Skipped per user request)
 - [ ] 3.0 Create Supplier Management Components
   - [ ] 3.1 Build SupplierCard component with company info, avatar, rating, and contact button
   - [ ] 3.2 Implement SupplierGrid component with responsive card layout
