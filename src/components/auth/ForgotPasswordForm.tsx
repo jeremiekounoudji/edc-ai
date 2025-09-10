@@ -86,19 +86,20 @@ export function ForgotPasswordForm({ onSuccess, onBackToLogin }: ForgotPasswordF
   if (isSuccess) {
     return (
       <Card className="w-full max-w-md mx-auto shadow-lg">
-      <CardHeader className="text-center pb-6">
+      <CardHeader className="text-center pb-4">
         <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
           <FiMail className="w-8 h-8 text-green-600 dark:text-green-400" />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Check Your Email
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          We've sent a password reset link to <strong>{formData.email}</strong>
-        </p>
       </CardHeader>
         
         <CardBody className="space-y-6">
+          <p className="text-gray-600 dark:text-gray-400 text-center">
+            We've sent a password reset link to <strong>{formData.email}</strong>
+          </p>
+          
           <div className="text-center space-y-4">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Didn't receive the email? Check your spam folder or try again.
@@ -135,16 +136,17 @@ export function ForgotPasswordForm({ onSuccess, onBackToLogin }: ForgotPasswordF
 
   return (
     <Card className="w-full max-w-md mx-auto shadow-lg">
-      <CardHeader className="text-center pb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+      <CardHeader className="text-center pb-4">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Forgot Password?
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Enter your email address and we'll send you a link to reset your password
-        </p>
       </CardHeader>
       
       <CardBody className="space-y-6">
+        <p className="text-gray-600 dark:text-gray-400 text-center">
+          Enter your email address and we'll send you a link to reset your password
+        </p>
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email Field */}
           <div>

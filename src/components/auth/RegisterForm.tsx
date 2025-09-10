@@ -120,16 +120,17 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
 
   return (
     <Card className="w-full max-w-md mx-auto shadow-lg">
-      <CardHeader className="text-center pb-2">
+      <CardHeader className="text-center pb-4">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Create Account
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Sign up for a new account
-        </p>
       </CardHeader>
       
       <CardBody className="space-y-6">
+        <p className="text-gray-600 dark:text-gray-400 text-center">
+          Sign up for a new account
+        </p>
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name Fields Row */}
           <div className="grid grid-cols-2 gap-4">

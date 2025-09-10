@@ -190,19 +190,21 @@ export function OTPModal({ isOpen, onClose, onSuccess, email }: OTPModalProps) {
       hideCloseButton={true}
     >
       <ModalContent>
-        <ModalHeader className="text-center pb-6">
+        <ModalHeader className="text-center pb-4">
           <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
             <FiMail className="w-8 h-8 text-blue-600 dark:text-blue-400" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Verify Your Email
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Enter the 6-digit code sent to <strong>{email}</strong>
-          </p>
         </ModalHeader>
         
         <ModalBody className="space-y-6">
+          {/* Description */}
+          <p className="text-gray-600 dark:text-gray-400 text-center">
+            Enter the 6-digit code sent to <strong>{email}</strong>
+          </p>
+          
           {/* OTP Input */}
           <div className="space-y-4">
             <Input
