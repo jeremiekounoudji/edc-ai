@@ -110,7 +110,7 @@ export function ChatArea({
               ) : (
                 <>
                   {/* General Welcome */}
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4">
+                  <h1 className="text-2xl mt-3 sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4">
                     Welcome to EDC-AI
                   </h1>
                   <p className="text-base sm:text-lg text-muted-foreground mb-6 sm:mb-8 px-4">
