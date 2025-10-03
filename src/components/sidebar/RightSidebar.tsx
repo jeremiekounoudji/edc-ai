@@ -216,12 +216,12 @@ export function RightSidebar({
             <Card
               key={project.id}
               isPressable
-              className={`cursor-pointer transition-all duration-200 rounded-xl border-2 hover:bg-accent/50 border-transparent hover:border-border hover:shadow-sm`}
+              className={`cursor-pointer transition-all duration-200 rounded-xl border-2 hover:bg-accent/50 border-transparent hover:border-border hover:shadow-sm w-full project-card-mobile`}
               onClick={() => handleProjectClick(project.id)}
             >
-              <CardBody className="p-3 h-24 flex flex-col justify-between">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0 overflow-hidden">
+              <CardBody className="p-3 h-24 flex flex-col justify-between w-full">
+                <div className="flex items-start justify-between w-full">
+                  <div className="flex-1 min-w-0 overflow-hidden pr-2">
                     <h3 className="text-sm font-medium text-foreground truncate">
                       {project.title}
                     </h3>

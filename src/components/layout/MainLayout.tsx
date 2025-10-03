@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TopNavigation } from '../ui/TopNavigation';
 import { LeftSidebar } from '../sidebar/LeftSidebar';
 import { RightSidebar } from '../sidebar/RightSidebar';
@@ -64,6 +64,34 @@ export function MainLayout({
   const toggleMobileRightMenu = () => {
     setMobileRightMenuOpen(!mobileRightMenuOpen);
   };
+
+  // Handle project selection - close mobile drawers
+  const handleProjectSelect = (projectId: string) => {
+    onProjectSelect?.(projectId);
+    // Close mobile drawers when project is selected
+    setMobileRightMenuOpen(false);
+    setMobileLeftMenuOpen(false);
+  };
+
+  // Handle tab change - close mobile drawers
+  const handleTabChange = (tab: ActiveTab) => {
+    navigateToTab(tab);
+    // Close mobile left drawer when tab is changed
+    setMobileLeftMenuOpen(false);
+  };
+
+  // Listen for custom events to open mobile project menu
+  useEffect(() => {
+    const handleOpenMobileProjectMenu = () => {
+      setMobileRightMenuOpen(true);
+    };
+
+    window.addEventListener('openMobileProjectMenu', handleOpenMobileProjectMenu);
+    return () => {
+      window.removeEventListener('openMobileProjectMenu', handleOpenMobileProjectMenu);
+    };
+  }, []);
+
   // if(!isAuthenticated) {
   //   router.push('/auth/login');
   // }
@@ -83,7 +111,7 @@ export function MainLayout({
           onNavigate={onNavigate}
           user={userProp}
           activeTab={activeTab}
-          onTabChange={navigateToTab}
+          onTabChange={handleTabChange}
         />
       </div>
 
@@ -113,7 +141,7 @@ export function MainLayout({
               onNavigate={onNavigate}
               user={userProp}
               activeTab={activeTab}
-              onTabChange={navigateToTab}
+              onTabChange={handleTabChange}
             />
           </div>
         </>
@@ -179,7 +207,7 @@ export function MainLayout({
                 isCollapsed={rightSidebarCollapsed}
                 onToggleCollapse={toggleRightSidebar}
                 projects={projects}
-                onProjectSelect={onProjectSelect}
+                onProjectSelect={handleProjectSelect}
                 onProjectCreate={onProjectCreate}
                 onProjectLoadMore={onProjectLoadMore}
               />
@@ -211,7 +239,7 @@ export function MainLayout({
               isCollapsed={false}
               onToggleCollapse={() => {}}
               projects={projects}
-              onProjectSelect={onProjectSelect}
+              onProjectSelect={handleProjectSelect}
               onProjectCreate={onProjectCreate}
               onProjectLoadMore={onProjectLoadMore}
             />

@@ -3,7 +3,6 @@ import { ActionCards } from "./ActionCards";
 import { InputBar } from "./InputBar";
 import { ChatBubble } from "./ChatBubble";
 import { Button } from "@heroui/button";
-import { Card, CardHeader } from "@heroui/card";
 import { FiArrowLeft } from "react-icons/fi";
 import { ChatMessage } from "../../lib/types/chat";
 import { Project } from "../../lib/types/project";
@@ -50,7 +49,7 @@ export function ChatArea({
   });
 
   return (
-    <div className="flex flex-col h-full relative">
+    <div className="flex flex-col h-full relative chat-area-mobile">
       {/* Conversation Header */}
      {selectedConversation && onBack && (
          <Button
@@ -67,7 +66,7 @@ export function ChatArea({
       <div className="flex-1 overflow-y-auto pb-40 min-h-0">
         {!hasMessages ? (
           /* Welcome Screen */
-          <div className="flex flex-col items-center justify-center h-full px-4 py-6 sm:py-8">
+          <div className="flex flex-col items-center justify-center h-full px-2 sm:px-4 py-6 sm:py-8 overflow-y-auto">
             <div className="text-center max-w-2xl w-full">
               {selectedConversation ? (
                 <>
@@ -117,6 +116,32 @@ export function ChatArea({
                   <p className="text-base sm:text-lg text-muted-foreground mb-6 sm:mb-8 px-4">
                    The best procurement and reporting AI powered by Bandesoft LTD
                   </p>
+                  
+                  {/* Project Selection Message */}
+                  {!selectedProject && (
+                    <div className="bg-muted/50 rounded-lg p-4 mb-6 mx-4">
+                      <p className="text-sm text-muted-foreground text-center mb-3">
+                        To start chatting, please create or select a project
+                      </p>
+                      {/* Mobile Project Selection Button */}
+                      <div className="lg:hidden flex justify-center">
+                        <Button
+                          color="primary"
+                          variant="solid"
+                          size="sm"
+                          onClick={() => {
+                            // Trigger mobile right menu open
+                            const event = new CustomEvent('openMobileProjectMenu');
+                            window.dispatchEvent(event);
+                          }}
+                          className="text-sm"
+                        >
+                          Select Project
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                  
                   {/* Action Cards Grid for General */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8 px-4">
                     <ActionCards
@@ -198,7 +223,7 @@ export function ChatArea({
       </div>
 
       {/* Floating Input Bar */}
-      {(selectedProject || selectedConversation) && <div className="absolute bottom-0 left-0  right-0 z-40 p-4 sm:p-6  ">
+      {(selectedProject || selectedConversation) && <div className="absolute bottom-0 left-0 right-0 z-40 p-2 sm:p-4 lg:p-6">
         <div className="max-w-4xl mx-auto">
           <InputBar
             onSendMessage={onSendMessage}

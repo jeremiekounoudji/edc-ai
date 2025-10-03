@@ -8,7 +8,20 @@ import { AuthProvider } from '@/components/providers/AuthProvider'
 export function Providers({children}: { children: React.ReactNode }) {
   return (
     <HeroUIProvider>
-      <ToastProvider placement="top-right" />
+      <ToastProvider 
+        placement="top-center" 
+        containerProps={{
+          style: {
+            zIndex: 9999,
+            position: 'fixed',
+            top: '1rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 'auto',
+            maxWidth: '90vw'
+          }
+        }}
+      />
       <AuthProvider>
         <NavigationProvider>
           {children}

@@ -125,3 +125,32 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--foreground));
 }
+
+/* Mobile-specific improvements */
+@media (max-width: 1024px) {
+  /* Ensure chat area takes full width on mobile */
+  .chat-area-mobile {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  /* Ensure toast notifications are properly positioned on mobile */
+  .toast-container {
+    position: fixed !important;
+    top: 1rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 9999 !important;
+    width: auto !important;
+    max-width: 90vw !important;
+  }
+  
+  /* Improve project card consistency on mobile */
+  .project-card-mobile {
+    width: 100% !important;
+    min-width: 0 !important;
+    flex-shrink: 0 !important;
+  }
+}

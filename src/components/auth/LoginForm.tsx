@@ -249,6 +249,20 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
             </>
           )}
         </Button>
+
+        {/* Register Link */}
+        <div className="text-center mt-4">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Don't have an account?{' '}
+            <button
+              type="button"
+              onClick={() => window.location.href = '/auth/register'}
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
+            >
+              Sign up here
+            </button>
+          </p>
+        </div>
       </CardBody>
     </Card>
   );
