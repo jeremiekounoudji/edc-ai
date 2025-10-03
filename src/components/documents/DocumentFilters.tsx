@@ -1,11 +1,17 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Input, Select, SelectItem, Button } from '@heroui/react';
-import { FiSearch, FiFilter, FiX } from 'react-icons/fi';
-import { DocumentFilters as DocumentFiltersType, DocumentType } from '../../lib/types/documents';
-import { getDocumentTypes, getDocumentTypeLabels } from '../../lib/mockData/documents';
+import React from "react";
+import { motion } from "framer-motion";
+import { Input, Select, SelectItem, Button } from "@heroui/react";
+import { FiSearch, FiFilter, FiX } from "react-icons/fi";
+import {
+  DocumentFilters as DocumentFiltersType,
+  DocumentType,
+} from "../../lib/types/documents";
+import {
+  getDocumentTypes,
+  getDocumentTypeLabels,
+} from "../../lib/mockData/documents";
 
 interface DocumentFiltersProps {
   filters: DocumentFiltersType;
@@ -20,40 +26,46 @@ export function DocumentFilters({
   onFiltersChange,
   onClearFilters,
   totalDocuments,
-  filteredCount
+  filteredCount,
 }: DocumentFiltersProps) {
   const documentTypes = getDocumentTypes();
   const typeLabels = getDocumentTypeLabels();
 
+  // Create options array for type filter
+  const typeOptions = [
+    { key: "all", label: "All Types" },
+    ...documentTypes.map((type) => ({ key: type, label: typeLabels[type] })),
+  ];
+
   const handleSearchChange = (value: string) => {
     onFiltersChange({
       ...filters,
-      searchQuery: value
+      searchQuery: value,
     });
   };
 
   const handleTypeFilterChange = (value: string) => {
     onFiltersChange({
       ...filters,
-      typeFilter: value as DocumentType | 'all'
+      typeFilter: value as DocumentType | "all",
     });
   };
 
   const handleSortByChange = (value: string) => {
     onFiltersChange({
       ...filters,
-      sortBy: value as 'name' | 'size' | 'uploadDate'
+      sortBy: value as "name" | "size" | "uploadDate",
     });
   };
 
   const handleSortOrderChange = (value: string) => {
     onFiltersChange({
       ...filters,
-      sortOrder: value as 'asc' | 'desc'
+      sortOrder: value as "asc" | "desc",
     });
   };
 
-  const hasActiveFilters = filters.searchQuery || filters.typeFilter !== 'all';
+  const hasActiveFilters = filters.searchQuery || filters.typeFilter !== "all";
 
   return (
     <div className="space-y-4 p-4 bg-muted/30 rounded-lg">
@@ -66,12 +78,14 @@ export function DocumentFilters({
             placeholder="Search documents..."
             value={filters.searchQuery}
             onValueChange={handleSearchChange}
-            startContent={<FiSearch className="h-4 w-4 text-muted-foreground" />}
+            startContent={
+              <FiSearch className="h-4 w-4 text-muted-foreground" />
+            }
             variant="bordered"
             size="sm"
             className="w-full"
             classNames={{
-              inputWrapper: "!border-2 !rounded-lg !min-h-[40px]"
+              inputWrapper: "!border-2 !rounded-lg !min-h-[40px]",
             }}
           />
         </div>
@@ -87,18 +101,15 @@ export function DocumentFilters({
             }}
             variant="bordered"
             size="sm"
-            startContent={<FiFilter className="h-4 w-4 text-muted-foreground" />}
+            startContent={
+              <FiFilter className="h-4 w-4 text-muted-foreground" />
+            }
             classNames={{
-              trigger: "!border-2 !rounded-lg !min-h-[40px]"
+              trigger: "!border-2 !rounded-lg !min-h-[40px]",
             }}
           >
-            <SelectItem key="all" value="all">
-              All Types
-            </SelectItem>
-            {documentTypes.map((type) => (
-              <SelectItem key={type} value={type}>
-                {typeLabels[type]}
-              </SelectItem>
+            {typeOptions.map((option) => (
+              <SelectItem key={option.key}>{option.label}</SelectItem>
             ))}
           </Select>
         </div>
@@ -122,18 +133,12 @@ export function DocumentFilters({
             size="sm"
             className="w-32"
             classNames={{
-              trigger: "!border-2 !rounded-lg !min-h-[36px]"
+              trigger: "!border-2 !rounded-lg !min-h-[36px]",
             }}
           >
-            <SelectItem key="name" value="name">
-              Name
-            </SelectItem>
-            <SelectItem key="size" value="size">
-              Size
-            </SelectItem>
-            <SelectItem key="uploadDate" value="uploadDate">
-              Date
-            </SelectItem>
+            <SelectItem key="name">Name</SelectItem>
+            <SelectItem key="size">Size</SelectItem>
+            <SelectItem key="uploadDate">Date</SelectItem>
           </Select>
         </div>
 
@@ -153,15 +158,11 @@ export function DocumentFilters({
             size="sm"
             className="w-24"
             classNames={{
-              trigger: "!border-2 !rounded-lg !min-h-[36px]"
+              trigger: "!border-2 !rounded-lg !min-h-[36px]",
             }}
           >
-            <SelectItem key="asc" value="asc">
-              A-Z
-            </SelectItem>
-            <SelectItem key="desc" value="desc">
-              Z-A
-            </SelectItem>
+            <SelectItem key="asc">A-Z</SelectItem>
+            <SelectItem key="desc">Z-A</SelectItem>
           </Select>
         </div>
 
@@ -174,7 +175,7 @@ export function DocumentFilters({
               </>
             ) : (
               <>
-                {totalDocuments} document{totalDocuments !== 1 ? 's' : ''} total
+                {totalDocuments} document{totalDocuments !== 1 ? "s" : ""} total
               </>
             )}
           </div>
@@ -204,15 +205,17 @@ export function DocumentFilters({
       {/* Active Filters Display */}
       {hasActiveFilters && (
         <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
-          <span className="text-xs font-medium text-muted-foreground">Active filters:</span>
-          
+          <span className="text-xs font-medium text-muted-foreground">
+            Active filters:
+          </span>
+
           {filters.searchQuery && (
             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary/10 text-primary">
               Search: "{filters.searchQuery}"
             </span>
           )}
-          
-          {filters.typeFilter !== 'all' && (
+
+          {filters.typeFilter !== "all" && (
             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-secondary/10 text-secondary">
               Type: {typeLabels[filters.typeFilter]}
             </span>
