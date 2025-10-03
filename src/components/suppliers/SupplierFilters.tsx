@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Input, Select, SelectItem, Button, Slider } from '@heroui/react';
-import { FiSearch, FiFilter, FiX, FiStar } from 'react-icons/fi';
-import { SupplierFilters as SupplierFiltersType } from '../../lib/types/suppliers';
-import { getSectors } from '../../lib/mockData/suppliers';
+import React from "react";
+import { Input, Select, SelectItem, Button, Slider } from "@heroui/react";
+import { FiSearch, FiFilter, FiX, FiStar } from "react-icons/fi";
+import { SupplierFilters as SupplierFiltersType } from "../../lib/types/suppliers";
+import { getSectors } from "../../lib/mockData/suppliers";
 
 interface SupplierFiltersProps {
   filters: SupplierFiltersType;
@@ -19,35 +19,41 @@ export function SupplierFilters({
   onFiltersChange,
   onClearFilters,
   totalSuppliers,
-  filteredCount
+  filteredCount,
 }: SupplierFiltersProps) {
   const sectors = getSectors();
+
+  // Create options array for sector filter
+  const sectorOptions = [
+    { key: "all", label: "All Sectors" },
+    ...sectors.map((sector) => ({ key: sector, label: sector })),
+  ];
 
   const handleSearchChange = (value: string) => {
     onFiltersChange({
       ...filters,
-      searchQuery: value
+      searchQuery: value,
     });
   };
 
   const handleSectorFilterChange = (value: string) => {
     onFiltersChange({
       ...filters,
-      sectorFilter: value
+      sectorFilter: value,
     });
   };
 
   const handleSortByChange = (value: string) => {
     onFiltersChange({
       ...filters,
-      sortBy: value as 'companyName' | 'rating' | 'sector'
+      sortBy: value as "companyName" | "rating" | "sector",
     });
   };
 
   const handleSortOrderChange = (value: string) => {
     onFiltersChange({
       ...filters,
-      sortOrder: value as 'asc' | 'desc'
+      sortOrder: value as "asc" | "desc",
     });
   };
 
@@ -57,15 +63,15 @@ export function SupplierFilters({
       ...filters,
       ratingRange: {
         min: range[0],
-        max: range[1]
-      }
+        max: range[1],
+      },
     });
   };
 
-  const hasActiveFilters = 
-    filters.searchQuery || 
-    filters.sectorFilter !== 'all' || 
-    filters.ratingRange.min > 0 || 
+  const hasActiveFilters =
+    filters.searchQuery ||
+    filters.sectorFilter !== "all" ||
+    filters.ratingRange.min > 0 ||
     filters.ratingRange.max < 100;
 
   return (
@@ -79,12 +85,14 @@ export function SupplierFilters({
             placeholder="Search suppliers..."
             value={filters.searchQuery}
             onValueChange={handleSearchChange}
-            startContent={<FiSearch className="h-4 w-4 text-muted-foreground" />}
+            startContent={
+              <FiSearch className="h-4 w-4 text-muted-foreground" />
+            }
             variant="bordered"
             size="sm"
             className="w-full"
             classNames={{
-              inputWrapper: "!border-2 !rounded-lg !min-h-[40px]"
+              inputWrapper: "!border-2 !rounded-lg !min-h-[40px]",
             }}
           />
         </div>
@@ -100,18 +108,15 @@ export function SupplierFilters({
             }}
             variant="bordered"
             size="sm"
-            startContent={<FiFilter className="h-4 w-4 text-muted-foreground" />}
+            startContent={
+              <FiFilter className="h-4 w-4 text-muted-foreground" />
+            }
             classNames={{
-              trigger: "!border-2 !rounded-lg !min-h-[40px]"
+              trigger: "!border-2 !rounded-lg !min-h-[40px]",
             }}
           >
-            <SelectItem key="all" value="all">
-              All Sectors
-            </SelectItem>
-            {sectors.map((sector) => (
-              <SelectItem key={sector} value={sector}>
-                {sector}
-              </SelectItem>
+            {sectorOptions.map((option) => (
+              <SelectItem key={option.key}>{option.label}</SelectItem>
             ))}
           </Select>
         </div>
@@ -125,7 +130,8 @@ export function SupplierFilters({
             <div className="flex items-center gap-2">
               <FiStar className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm font-medium text-foreground">
-                Rating Range: {filters.ratingRange.min}% - {filters.ratingRange.max}%
+                Rating Range: {filters.ratingRange.min}% -{" "}
+                {filters.ratingRange.max}%
               </span>
             </div>
             <Slider
@@ -135,8 +141,8 @@ export function SupplierFilters({
               showSteps={false}
               showOutline={true}
               disableThumbScale={true}
-              formatOptions={{ style: 'percent' }}
-              tooltipValueFormatOptions={{ style: 'percent' }}
+              formatOptions={{ style: "percent" }}
+              tooltipValueFormatOptions={{ style: "percent" }}
               minValue={0}
               maxValue={100}
               value={[filters.ratingRange.min, filters.ratingRange.max]}
@@ -147,7 +153,7 @@ export function SupplierFilters({
                 filler: "bg-primary",
                 thumb: "bg-primary border-primary",
                 label: "text-foreground",
-                value: "text-foreground"
+                value: "text-foreground",
               }}
             />
           </div>
@@ -171,18 +177,12 @@ export function SupplierFilters({
               size="sm"
               className="w-32"
               classNames={{
-                trigger: "!border-2 !rounded-lg !min-h-[36px]"
+                trigger: "!border-2 !rounded-lg !min-h-[36px]",
               }}
             >
-              <SelectItem key="companyName" value="companyName">
-                Company
-              </SelectItem>
-              <SelectItem key="rating" value="rating">
-                Rating
-              </SelectItem>
-              <SelectItem key="sector" value="sector">
-                Sector
-              </SelectItem>
+              <SelectItem key="companyName">Company</SelectItem>
+              <SelectItem key="rating">Rating</SelectItem>
+              <SelectItem key="sector">Sector</SelectItem>
             </Select>
           </div>
 
@@ -202,15 +202,11 @@ export function SupplierFilters({
               size="sm"
               className="w-24"
               classNames={{
-                trigger: "!border-2 !rounded-lg !min-h-[36px]"
+                trigger: "!border-2 !rounded-lg !min-h-[36px]",
               }}
             >
-              <SelectItem key="asc" value="asc">
-                A-Z
-              </SelectItem>
-              <SelectItem key="desc" value="desc">
-                Z-A
-              </SelectItem>
+              <SelectItem key="asc">A-Z</SelectItem>
+              <SelectItem key="desc">Z-A</SelectItem>
             </Select>
           </div>
         </div>
@@ -225,7 +221,7 @@ export function SupplierFilters({
             </>
           ) : (
             <>
-              {totalSuppliers} supplier{totalSuppliers !== 1 ? 's' : ''} total
+              {totalSuppliers} supplier{totalSuppliers !== 1 ? "s" : ""} total
             </>
           )}
         </div>
@@ -246,15 +242,17 @@ export function SupplierFilters({
       {/* Active Filters Display */}
       {hasActiveFilters && (
         <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
-          <span className="text-xs font-medium text-muted-foreground">Active filters:</span>
-          
+          <span className="text-xs font-medium text-muted-foreground">
+            Active filters:
+          </span>
+
           {filters.searchQuery && (
             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary/10 text-primary">
               Search: "{filters.searchQuery}"
             </span>
           )}
-          
-          {filters.sectorFilter !== 'all' && (
+
+          {filters.sectorFilter !== "all" && (
             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-secondary/10 text-secondary">
               Sector: {filters.sectorFilter}
             </span>

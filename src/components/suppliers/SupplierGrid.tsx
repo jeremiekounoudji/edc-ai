@@ -159,7 +159,7 @@ export function SupplierGrid({
         className="space-y-8"
       >
         {groupedSuppliers.map((group) => (
-          <motion.div key={group.sector} variants={groupVariants}>
+          <motion.div key={group.sector} >
             {/* Group Header */}
             {groupBySector && (
               <div className="flex items-center justify-between mb-4">

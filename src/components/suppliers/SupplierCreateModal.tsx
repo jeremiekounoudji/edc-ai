@@ -212,7 +212,7 @@ export const SupplierCreateModal: React.FC<SupplierCreateModalProps> = ({
                 }}
               >
                 {sectors.map((sector) => (
-                  <SelectItem key={sector} value={sector}>
+                  <SelectItem key={sector}>
                     {sector}
                   </SelectItem>
                 ))}

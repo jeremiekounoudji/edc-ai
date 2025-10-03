@@ -44,7 +44,7 @@ export function TabContent({ activeTab, children }: TabContentProps) {
         return <DocumentsPage />;
       case 'suppliers':
         return <SuppliersPage />;
-      case 'ai-chat':
+      case 'projects':
       default:
         return <>{children}</>;
     }
@@ -54,7 +54,7 @@ export function TabContent({ activeTab, children }: TabContentProps) {
     <AnimatePresence mode="wait">
       <motion.div
         key={activeTab}
-        variants={tabVariants}
+        // variants={tabVariants}
         initial="enter"
         animate="center"
         exit="exit"
