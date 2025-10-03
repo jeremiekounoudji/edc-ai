@@ -103,7 +103,7 @@ export function useChat() {
       });
       
       // Call the actual AI service (non-streaming)
-      const response = await aiService.sendMessage(content);
+      const response = await aiService.sendMessage(content, session.id, 'user-id');
       
       logDebug('AI service response received', { 
         sessionId: session.id, 

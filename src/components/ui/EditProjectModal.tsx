@@ -6,6 +6,14 @@ import { Textarea } from '@heroui/input';
 import { FiFolder, FiTrash2 } from 'react-icons/fi';
 import { Project } from '../../lib/types/project';
 
+// Helper function to format dates that can be either Date or string
+const formatDate = (date: Date | string): string => {
+  if (typeof date === 'string') {
+    return new Date(date).toLocaleDateString();
+  }
+  return date.toLocaleDateString();
+};
+
 interface EditProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -137,9 +145,9 @@ export function EditProjectModal({
               />
               
               <div className="text-xs text-muted-foreground">
-                <p>• Created: {project.createdAt.toLocaleDateString()}</p>
-                <p>• Last updated: {project.updatedAt.toLocaleDateString()}</p>
-                <p>• Chat sessions: {project.chatSessions.length}</p>
+                <p>• Created: {formatDate(project.createdAt)}</p>
+                <p>• Last updated: {formatDate(project.updatedAt)}</p>
+                <p>• Chat sessions: {project.chatSessions?.length || 0}</p>
               </div>
             </div>
           ) : (

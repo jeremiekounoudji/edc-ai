@@ -16,10 +16,9 @@ export const showToast = {
   success: (message: string, options?: ToastOptions) => {
     try {
       addToast({
-        type: 'success',
         title: options?.title || 'Success',
         description: options?.description || message,
-        duration: options?.duration || 4000,
+        color: 'success',
       });
     } catch (error) {
       console.log('Success:', message);
@@ -29,10 +28,9 @@ export const showToast = {
   error: (message: string, options?: ToastOptions) => {
     try {
       addToast({
-        type: 'error',
         title: options?.title || 'Error',
         description: options?.description || message,
-        duration: options?.duration || 6000,
+        color: 'danger',
       });
     } catch (error) {
       console.error('Error:', message);
@@ -42,10 +40,9 @@ export const showToast = {
   warning: (message: string, options?: ToastOptions) => {
     try {
       addToast({
-        type: 'warning',
         title: options?.title || 'Warning',
         description: options?.description || message,
-        duration: options?.duration || 5000,
+        color: 'warning',
       });
     } catch (error) {
       console.warn('Warning:', message);
@@ -55,10 +52,9 @@ export const showToast = {
   info: (message: string, options?: ToastOptions) => {
     try {
       addToast({
-        type: 'info',
         title: options?.title || 'Info',
         description: options?.description || message,
-        duration: options?.duration || 4000,
+        color: 'primary',
       });
     } catch (error) {
       console.info('Info:', message);

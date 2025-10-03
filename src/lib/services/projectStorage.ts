@@ -174,6 +174,10 @@ export class ProjectStorageService {
       throw new Error('Project not found');
     }
 
+    if (!project.chatSessions) {
+      project.chatSessions = [];
+    }
+    
     if (!project.chatSessions.includes(sessionId)) {
       project.chatSessions.push(sessionId);
       project.updatedAt = new Date();
@@ -192,6 +196,10 @@ export class ProjectStorageService {
       throw new Error('Project not found');
     }
 
+    if (!project.chatSessions) {
+      return; // No sessions to remove
+    }
+    
     const sessionIndex = project.chatSessions.indexOf(sessionId);
     if (sessionIndex !== -1) {
       project.chatSessions.splice(sessionIndex, 1);
@@ -205,7 +213,7 @@ export class ProjectStorageService {
    */
   async getProjectsByChatSession(sessionId: string): Promise<Project[]> {
     await this.initialize();
-    return this.projects.filter(project => project.chatSessions.includes(sessionId));
+    return this.projects.filter(project => project.chatSessions?.includes(sessionId) || false);
   }
 
   /**
@@ -221,7 +229,7 @@ export class ProjectStorageService {
 
     const totalProjects = this.projects.length;
     const totalChatSessions = this.projects.reduce(
-      (sum, project) => sum + project.chatSessions.length,
+      (sum, project) => sum + (project.chatSessions?.length || 0),
       0
     );
     const averageSessionsPerProject = totalProjects > 0 ? totalChatSessions / totalProjects : 0;

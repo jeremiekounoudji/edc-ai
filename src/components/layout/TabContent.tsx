@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ActiveTab } from './MainLayout';
+import { ActiveTab } from '../../lib/types/navigation';
 import DocumentsPage from '../../app/documents/page';
 import SuppliersPage from '../../app/suppliers/page';
 

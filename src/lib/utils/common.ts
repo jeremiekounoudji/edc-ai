@@ -168,10 +168,10 @@ export function deepClone<T>(obj: T): T {
   if (obj instanceof Date) return new Date(obj.getTime()) as T;
   if (obj instanceof Array) return obj.map(item => deepClone(item)) as T;
   if (typeof obj === 'object') {
-    const clonedObj = {} as Record<string, unknown>;
+    const clonedObj = {} as T;
     for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
-        clonedObj[key] = deepClone(obj[key]);
+        (clonedObj as any)[key] = deepClone((obj as any)[key]);
       }
     }
     return clonedObj;

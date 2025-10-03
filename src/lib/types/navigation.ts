@@ -1,4 +1,4 @@
-import { ActiveTab } from '../components/layout/MainLayout';
+export type ActiveTab = 'projects' | 'ai-chat' | 'documents' | 'suppliers';
 
 export interface NavigationState {
   activeTab: ActiveTab;
@@ -25,6 +25,14 @@ export interface TabMetadata {
 }
 
 export const TAB_METADATA: Record<ActiveTab, TabMetadata> = {
+  'projects': {
+    id: 'projects',
+    title: 'Projects',
+    description: 'Manage and organize your projects',
+    icon: 'FiFolder',
+    path: '/projects',
+    isEnabled: true,
+  },
   'ai-chat': {
     id: 'ai-chat',
     title: 'AI Chat',

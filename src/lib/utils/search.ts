@@ -127,7 +127,7 @@ export function searchProjects(
         relevanceScore,
         metadata: {
           projectId: project.id,
-          timestamp: project.updatedAt,
+          timestamp: typeof project.updatedAt === 'string' ? new Date(project.updatedAt) : project.updatedAt,
         },
       });
     }

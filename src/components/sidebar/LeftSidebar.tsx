@@ -22,7 +22,7 @@ import {
   FiShield
 } from 'react-icons/fi';
 import { useTheme } from '../../hooks/useTheme';
-import { ActiveTab } from '../layout/MainLayout';
+import { ActiveTab } from '../../lib/types/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 
 interface LeftSidebarProps {

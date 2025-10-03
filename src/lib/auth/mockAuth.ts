@@ -57,8 +57,8 @@ export const mockAuthService = {
     const newUser: User = {
       id: (mockUsers.length + 1).toString(),
       email: data.email,
-      firstName: data.firstName,
-      lastName: data.lastName,
+      firstName: data.firstname,
+      lastName: data.lastname,
       role: data.role,
       isEmailVerified: false,
       createdAt: new Date(),

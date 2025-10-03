@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal';
 import { Button } from '@heroui/button';
 import { Card, CardBody } from '@heroui/card';
-import { FiKeyboard, FiX } from 'react-icons/fi';
+import { FiCommand, FiX } from 'react-icons/fi';
 
 interface KeyboardShortcutsModalProps {
   isOpen: boolean;
@@ -61,7 +61,7 @@ export function KeyboardShortcutsModal({ isOpen, onClose }: KeyboardShortcutsMod
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
           <div className="flex items-center space-x-2">
-            <FiKeyboard className="h-5 w-5 text-primary" />
+            <FiCommand className="h-5 w-5 text-primary" />
             <h2 className="text-xl font-semibold">Keyboard Shortcuts</h2>
           </div>
           <p className="text-sm text-muted-foreground">

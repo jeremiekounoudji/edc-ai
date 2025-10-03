@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { ActiveTab } from '../components/layout/MainLayout';
+import { ActiveTab } from '../lib/types/navigation';
 import { NavigationContextType, NavigationState, NavigationEvent } from '../lib/types/navigation';
 
 const NavigationContext = createContext<NavigationContextType | undefined>(undefined);

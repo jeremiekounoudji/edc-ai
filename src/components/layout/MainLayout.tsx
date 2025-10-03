@@ -10,8 +10,7 @@ import { Button } from '@heroui/button';
 import { Project } from '../../lib/types/project';
 import { useNavigation } from '../../context/NavigationContext';
 import { useRouter } from 'next/navigation';
-
-export type ActiveTab = 'projects' | 'documents' | 'suppliers';
+import { ActiveTab } from '../../lib/types/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 
 interface MainLayoutProps {

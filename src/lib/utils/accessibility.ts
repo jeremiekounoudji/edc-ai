@@ -240,7 +240,7 @@ export const MotionPreferences = {
    * Apply motion preferences to element
    */
   applyMotionPreferences: (element: HTMLElement): void => {
-    if (this.prefersReducedMotion()) {
+    if (MotionPreferences.prefersReducedMotion()) {
       element.style.animation = 'none';
       element.style.transition = 'none';
     }
