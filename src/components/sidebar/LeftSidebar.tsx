@@ -23,6 +23,7 @@ import {
 } from 'react-icons/fi';
 import { useTheme } from '../../hooks/useTheme';
 import { ActiveTab } from '../layout/MainLayout';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface LeftSidebarProps {
   isCollapsed?: boolean;
@@ -43,23 +44,25 @@ export function LeftSidebar({
   onToggleCollapse,
   onSearch,
   onNavigate,
-  user,
-  activeTab = 'ai-chat',
+  // user,
+  activeTab = 'projects',
   onTabChange
 }: LeftSidebarProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const { currentTheme, toggleTheme, getThemeIcon, getThemeLabel } = useTheme();
+  // get current user from useauth store
+  const {  user } = useAuthStore();
 
   const defaultUser = {
     name: 'Emilia Caitlin',
     email: 'hey@unspace.agency',
   };
 
-  const currentUser = user || defaultUser;
+  const currentUser = user ;
 
   const navigationItems = [
-    { id: 'ai-chat', label: 'AI Chat', icon: FiMessageSquare, isActive: activeTab === 'ai-chat' },
-    { id: 'projects', label: 'Projects', icon: FiFolder, isActive: false },
+    // { id: 'projects', label: 'AI Chat', icon: FiMessageSquare, isActive: activeTab === 'projects' },
+    { id: 'projects', label: 'Projects', icon: FiFolder,  isActive: activeTab === 'projects' },
     { id: 'templates', label: 'Templates', icon: FiFileText, isActive: false },
     { id: 'documents', label: 'Documents', icon: FiFileText, hasAdd: true, isActive: activeTab === 'documents' },
     { id: 'dashboards-reports', label: 'Dashboards & Reports', icon: FiTrendingUp, isActive: false },
@@ -78,7 +81,7 @@ export function LeftSidebar({
 
   const handleNavigationClick = (itemId: string) => {
     // Handle tab switching for documents and suppliers
-    if (itemId === 'documents' || itemId === 'suppliers' || itemId === 'ai-chat') {
+    if (itemId === 'documents' || itemId === 'suppliers' || itemId === 'projects') {
       onTabChange?.(itemId as ActiveTab);
     }
     onNavigate?.(itemId);
@@ -160,7 +163,7 @@ export function LeftSidebar({
           <div className="p-2 border-t border-border">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
               <span className="text-xs font-medium text-muted-foreground">
-                {currentUser.name.charAt(0)}
+                {currentUser?.firstname.charAt(0)}
               </span>
             </div>
           </div>
@@ -270,15 +273,15 @@ export function LeftSidebar({
           <div className="flex items-center space-x-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
               <span className="text-sm font-semibold text-muted-foreground">
-                {currentUser.name.charAt(0)}
+                {currentUser?.firstname.charAt(0)}
               </span>
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-foreground truncate">
-                {currentUser.name}
+                {currentUser?.firstname}
               </p>
               <p className="text-xs text-muted-foreground truncate mt-0.5">
-                {currentUser.email}
+                {currentUser?.email}
               </p>
             </div>
           </div>

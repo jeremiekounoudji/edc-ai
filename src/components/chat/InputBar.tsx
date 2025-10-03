@@ -27,9 +27,16 @@ export function InputBar({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSendMessage = () => {
+    console.log('Send button clicked', { message, disabled, trimmed: message.trim() });
     if (message.trim() && !disabled) {
+      console.log('Calling onSendMessage with message:', message.trim());
       onSendMessage?.(message.trim());
       setMessage('');
+    } else {
+      console.log('Message not sent - conditions not met', { 
+        hasMessage: !!message.trim(), 
+        disabled 
+      });
     }
   };
 
@@ -82,10 +89,10 @@ export function InputBar({
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2">
               {[
-                { label: 'Write copy', prompt: 'Write compelling copy for a product launch announcement' },
-                { label: 'Image generation', prompt: 'Generate an image for a modern tech startup website' },
-                { label: 'Create avatar', prompt: 'Create a professional avatar for a business profile' },
-                { label: 'Write code', prompt: 'Write a React component for a user authentication form' },
+                { label: 'Start a Procurement', prompt: 'Start a Procurement' },
+                { label: 'Ask Advice', prompt: 'Get expert consultation' },
+                { label: 'Inspect a Project', prompt: 'Analyze project details' },
+                { label: 'Generate Report', prompt: 'Create comprehensive reports' },
               ].map((action) => (
                 <Button
                   key={action.label}
@@ -103,9 +110,9 @@ export function InputBar({
       )}
 
       {/* Main Input Container - 2-Line Layout */}
-      <div className="bg-background border border-border rounded-2xl p-3 shadow-lg space-y-3">
+      <div className="bg-background border border-border rounded-2xl p-3 shadow-lg space-y-1">
         {/* First Line - Text Input + Character Count + Send Button */}
-        <div className="flex items-end space-x-3">
+        <div className="flex items-end space-x-1">
           {/* Text Input - Full Width */}
           <div className="flex-1 min-w-0">
             <textarea
@@ -119,7 +126,7 @@ export function InputBar({
             className="w-full resize-none bg-transparent border-0 outline-none text-sm sm:text-base text-left placeholder:text-muted-foreground disabled:opacity-50 py-2 focus:outline-none focus:ring-0 focus:border-0"
             style={{
               minHeight: '40px',
-              maxHeight: '120px',
+              maxHeight: '90px',
               height: 'auto',
               width: '100%',
               display: 'block',

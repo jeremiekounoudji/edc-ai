@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { TopNavigation } from '../ui/TopNavigation';
 import { LeftSidebar } from '../sidebar/LeftSidebar';
@@ -7,8 +9,10 @@ import { FiMenu, FiX } from 'react-icons/fi';
 import { Button } from '@heroui/button';
 import { Project } from '../../lib/types/project';
 import { useNavigation } from '../../context/NavigationContext';
+import { useRouter } from 'next/navigation';
 
-export type ActiveTab = 'ai-chat' | 'documents' | 'suppliers';
+export type ActiveTab = 'projects' | 'documents' | 'suppliers';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -29,7 +33,7 @@ interface MainLayoutProps {
 
 export function MainLayout({
   children,
-  user,
+  user: userProp,
   projects,
   onSearch,
   onNavigate,
@@ -37,14 +41,15 @@ export function MainLayout({
   onProjectCreate,
   onProjectLoadMore,
   onUpgradeClick,
-  currentTitle = "AI Chat",
+  currentTitle = "EDC-AI",
 }: MainLayoutProps) {
+  const { user , isAuthenticated, logout } = useAuthStore();
   const { activeTab, navigateToTab } = useNavigation();
   const [leftSidebarCollapsed, setLeftSidebarCollapsed] = useState(false);
   const [rightSidebarCollapsed, setRightSidebarCollapsed] = useState(false);
   const [mobileLeftMenuOpen, setMobileLeftMenuOpen] = useState(false);
   const [mobileRightMenuOpen, setMobileRightMenuOpen] = useState(false);
-
+  const router = useRouter();
   const toggleLeftSidebar = () => {
     setLeftSidebarCollapsed(!leftSidebarCollapsed);
   };
@@ -60,6 +65,9 @@ export function MainLayout({
   const toggleMobileRightMenu = () => {
     setMobileRightMenuOpen(!mobileRightMenuOpen);
   };
+  // if(!isAuthenticated) {
+  //   router.push('/auth/login');
+  // }
 
   return (
     <div className="flex h-screen bg-background">
@@ -74,7 +82,7 @@ export function MainLayout({
           onToggleCollapse={toggleLeftSidebar}
           onSearch={onSearch}
           onNavigate={onNavigate}
-          user={user}
+          user={userProp}
           activeTab={activeTab}
           onTabChange={navigateToTab}
         />
@@ -104,7 +112,7 @@ export function MainLayout({
               onToggleCollapse={() => {}}
               onSearch={onSearch}
               onNavigate={onNavigate}
-              user={user}
+              user={userProp}
               activeTab={activeTab}
               onTabChange={navigateToTab}
             />
@@ -117,9 +125,11 @@ export function MainLayout({
         {/* Top Navigation - Only spans chat area */}
         <div className="relative z-50">
           <TopNavigation
-            user={user}
+            user={userProp}
             onUpgradeClick={onUpgradeClick}
             currentTitle={currentTitle}
+            // onBack={() => navigateToTab('projects')}
+            
           />
         </div>
 
@@ -136,15 +146,17 @@ export function MainLayout({
           </Button>
           
           <div className="flex items-center space-x-1">
-            <Button
-              isIconOnly
-              variant="ghost"
-              size="sm"
-              onClick={toggleMobileRightMenu}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <FiMenu className="h-4 w-4" />
-            </Button>
+            {activeTab === 'projects' && (
+              <Button
+                isIconOnly
+                variant="ghost"
+                size="sm"
+                onClick={toggleMobileRightMenu}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <FiMenu className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
 
@@ -157,26 +169,28 @@ export function MainLayout({
             </TabContent>
           </div>
 
-          {/* Desktop Right Sidebar */}
-          <div
-            className={`hidden lg:block transition-all duration-300 ease-in-out ${
-              rightSidebarCollapsed ? 'w-16' : 'w-80'
-            }`}
-          >
-            <RightSidebar
-              isCollapsed={rightSidebarCollapsed}
-              onToggleCollapse={toggleRightSidebar}
-              projects={projects}
-              onProjectSelect={onProjectSelect}
-              onProjectCreate={onProjectCreate}
-              onProjectLoadMore={onProjectLoadMore}
-            />
-          </div>
+          {/* Desktop Right Sidebar - Only show on AI Chat tab */}
+          {activeTab === 'projects' && (
+            <div
+              className={`hidden lg:block transition-all duration-300 ease-in-out ${
+                rightSidebarCollapsed ? 'w-16' : 'w-80'
+              }`}
+            >
+              <RightSidebar
+                isCollapsed={rightSidebarCollapsed}
+                onToggleCollapse={toggleRightSidebar}
+                projects={projects}
+                onProjectSelect={onProjectSelect}
+                onProjectCreate={onProjectCreate}
+                onProjectLoadMore={onProjectLoadMore}
+              />
+            </div>
+          )}
         </main>
       </div>
 
-      {/* Mobile Right Sidebar Overlay */}
-      {mobileRightMenuOpen && (
+      {/* Mobile Right Sidebar Overlay - Only show on AI Chat tab */}
+      {activeTab === 'projects' && mobileRightMenuOpen && (
         <>
           <div
             className="fixed inset-0 z-40 bg-black/50 lg:hidden"

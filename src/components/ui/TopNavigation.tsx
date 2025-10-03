@@ -19,12 +19,13 @@ export function TopNavigation({ onUpgradeClick, user, currentTitle = "AI Chat" }
   return (
     <header className="w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-16 items-center justify-between px-4">
+         
         {/* Logo and App Name */}
         <div className="flex items-center space-x-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <span className="text-sm font-bold">S</span>
+            <span className="text-sm font-bold">E</span>
           </div>
-          <h1 className="text-xl font-semibold text-foreground">Script</h1>
+          <h1 className="text-xl font-semibold text-foreground">EDC AI</h1>
         </div>
 
         {/* Center - Current Section Title */}
@@ -35,7 +36,7 @@ export function TopNavigation({ onUpgradeClick, user, currentTitle = "AI Chat" }
         {/* Right Side - Actions */}
         <div className="flex items-center space-x-3">
           {/* Upgrade Button */}
-          <Button
+          {/* <Button
             color="default"
             variant="bordered"
             size="sm"
@@ -44,7 +45,7 @@ export function TopNavigation({ onUpgradeClick, user, currentTitle = "AI Chat" }
             className="bg-black text-white hover:bg-gray-800 border-black !flex !items-center"
           >
             <span className="leading-none">Upgrade</span>
-          </Button>
+          </Button> */}
 
           {/* Help Icon */}
           <Button
@@ -57,14 +58,14 @@ export function TopNavigation({ onUpgradeClick, user, currentTitle = "AI Chat" }
           </Button>
 
           {/* Gift Icon */}
-          <Button
+          {/* <Button
             isIconOnly
             variant="ghost"
             size="sm"
             className="text-muted-foreground hover:text-foreground"
           >
             <span className="text-lg">🎁</span>
-          </Button>
+          </Button> */}
 
           {/* User Profile */}
           <div className="relative">

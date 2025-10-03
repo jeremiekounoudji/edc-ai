@@ -177,13 +177,16 @@ export function GlobalSearchModal({
                             const isSelected = searchResults.indexOf(result) === selectedIndex;
                             
                             return (
-                              <Card
+                              <div
                                 key={result.id}
-                                isPressable
-                                className={`transition-colors ${isSelected ? 'bg-accent' : 'hover:bg-accent/50'}`}
+                                className={`transition-colors rounded-lg border cursor-pointer ${
+                                  isSelected 
+                                    ? 'bg-accent border-border' 
+                                    : 'hover:bg-accent/50 border-transparent'
+                                }`}
                                 onClick={() => handleSelectResult(result)}
                               >
-                                <CardBody className="p-3">
+                                <div className="p-3">
                                   <div className="flex items-start space-x-3">
                                     <IconComponent className="h-4 w-4 text-muted-foreground mt-1" />
                                     <div className="flex-1 min-w-0">
@@ -200,8 +203,8 @@ export function GlobalSearchModal({
                                       )}
                                     </div>
                                   </div>
-                                </CardBody>
-                              </Card>
+                                </div>
+                              </div>
                             );
                           })}
                         </div>
@@ -220,13 +223,16 @@ export function GlobalSearchModal({
                             const isSelected = searchResults.indexOf(result) === selectedIndex;
                             
                             return (
-                              <Card
+                              <div
                                 key={result.id}
-                                isPressable
-                                className={`transition-colors ${isSelected ? 'bg-accent' : 'hover:bg-accent/50'}`}
+                                className={`transition-colors rounded-lg border cursor-pointer ${
+                                  isSelected 
+                                    ? 'bg-accent border-border' 
+                                    : 'hover:bg-accent/50 border-transparent'
+                                }`}
                                 onClick={() => handleSelectResult(result)}
                               >
-                                <CardBody className="p-3">
+                                <div className="p-3">
                                   <div className="flex items-start space-x-3">
                                     <IconComponent className="h-4 w-4 text-muted-foreground mt-1" />
                                     <div className="flex-1 min-w-0">
@@ -243,8 +249,8 @@ export function GlobalSearchModal({
                                       )}
                                     </div>
                                   </div>
-                                </CardBody>
-                              </Card>
+                                </div>
+                              </div>
                             );
                           })}
                         </div>
@@ -263,13 +269,16 @@ export function GlobalSearchModal({
                             const isSelected = searchResults.indexOf(result) === selectedIndex;
                             
                             return (
-                              <Card
+                              <div
                                 key={result.id}
-                                isPressable
-                                className={`transition-colors ${isSelected ? 'bg-accent' : 'hover:bg-accent/50'}`}
+                                className={`transition-colors rounded-lg border cursor-pointer ${
+                                  isSelected 
+                                    ? 'bg-accent border-border' 
+                                    : 'hover:bg-accent/50 border-transparent'
+                                }`}
                                 onClick={() => handleSelectResult(result)}
                               >
-                                <CardBody className="p-3">
+                                <div className="p-3">
                                   <div className="flex items-start space-x-3">
                                     <IconComponent className="h-4 w-4 text-muted-foreground mt-1" />
                                     <div className="flex-1 min-w-0">
@@ -286,8 +295,8 @@ export function GlobalSearchModal({
                                       )}
                                     </div>
                                   </div>
-                                </CardBody>
-                              </Card>
+                                </div>
+                              </div>
                             );
                           })}
                         </div>

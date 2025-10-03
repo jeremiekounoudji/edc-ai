@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Popover, PopoverTrigger, PopoverContent, Button } from '@heroui/react';
+import { Button } from '@heroui/button';
+import { Popover, PopoverTrigger, PopoverContent } from '@heroui/popover';
 import { FiMail, FiPhone, FiMessageCircle, FiCopy, FiExternalLink } from 'react-icons/fi';
 import { Supplier, ContactOption } from '../../lib/types/suppliers';
 import { formatPhoneNumber } from '../../lib/utils/formatters';
@@ -114,11 +115,13 @@ export function ContactPopover({
       backdrop="transparent"
     >
       <PopoverTrigger>
-        {trigger}
+        <div onClick={() => onOpenChange(true)}>
+          {trigger}
+        </div>
       </PopoverTrigger>
       
-      <PopoverContent className="w-80 p-3">
-        <div className="space-y-3">
+      <PopoverContent className="w-80 p-4">
+        <div className="space-y-4">
           {/* Header */}
           <div className="text-center">
             <h4 className="text-sm font-semibold text-foreground">
@@ -130,11 +133,11 @@ export function ContactPopover({
           </div>
 
           {/* Contact Options */}
-          <div className="space-y-2">
+          <div className="space-y-3">
             {contactOptions.map((option) => (
-              <div key={option.type} className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
+              <div key={option.type} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
                 <div className="flex items-center space-x-3">
-                  <div className={`p-2 rounded-full bg-${getButtonColor(option.type)}/10`}>
+                  <div className={`p-2.5 rounded-full bg-${getButtonColor(option.type)}/10`}>
                     {getIcon(option.icon)}
                   </div>
                   <div className="flex flex-col">
@@ -178,7 +181,7 @@ export function ContactPopover({
 
           {/* Additional Info */}
           {supplier.website && (
-            <div className="pt-2 border-t border-border">
+            <div className="pt-3 border-t border-border">
               <Button
                 size="sm"
                 variant="light"

@@ -7,6 +7,7 @@ import { LoginForm } from '@/components/auth/LoginForm';
 export default function Home() {
   const router = useRouter();
 
+
   const handleLoginSuccess = () => {
     // Redirect to chat page after successful login
     router.push('/chat');

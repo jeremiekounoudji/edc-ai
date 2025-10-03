@@ -2,9 +2,9 @@ export interface Project {
   id: string;
   title: string;
   description: string;
-  createdAt: Date;
-  updatedAt: Date;
-  chatSessions: string[]; // Array of chat session IDs
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  chatSessions?: string[]; // Array of chat session IDs
   isSelected?: boolean;
 }
 

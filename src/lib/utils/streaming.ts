@@ -69,12 +69,22 @@ export class StreamingTextHandler {
             
             try {
               const parsed = JSON.parse(data);
-              if (parsed.content) {
+              // Handle the specific response format from n8n
+              // The content is in the 'Content-->output' field based on the PowerShell example
+              if (parsed['Content-->output']) {
+                this.onUpdate(parsed['Content-->output']);
+              } else if (parsed.content) {
                 this.onUpdate(parsed.content);
               }
             } catch (e) {
-              // Ignore malformed JSON
+              // If it's not JSON, treat it as plain text
+              if (line.trim()) {
+                this.onUpdate(line);
+              }
             }
+          } else if (line.trim()) {
+            // Handle plain text responses
+            this.onUpdate(line);
           }
         }
       }

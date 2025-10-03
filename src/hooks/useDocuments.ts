@@ -1,168 +1,230 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import { Document, DocumentFilters, DocumentPagination, DocumentSelection } from '../lib/types/documents';
-import { mockDocuments } from '../lib/mockData/documents';
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '../lib/supabase';
+import { Document, DocumentType, DocumentFilters } from '../lib/types/documents';
 
-export function useDocuments() {
-  const [filters, setFilters] = useState<DocumentFilters>({
-    searchQuery: '',
-    typeFilter: 'all',
-    sortBy: 'uploadDate',
-    sortOrder: 'desc'
-  });
+interface UseDocumentsReturn {
+  documents: Document[];
+  loading: boolean;
+  error: string | null;
+  refetch: () => Promise<void>;
+  deleteDocument: (documentId: string) => Promise<void>;
+  deleteDocuments: (documentIds: string[]) => Promise<void>;
+}
 
-  const [pagination, setPagination] = useState<DocumentPagination>({
-    currentPage: 1,
-    totalPages: 1,
-    itemsPerPage: 20,
-    totalItems: 0
-  });
+export const useDocuments = (filters?: DocumentFilters): UseDocumentsReturn => {
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const [selection, setSelection] = useState<DocumentSelection>({
-    selectedIds: [],
-    isAllSelected: false
-  });
+  const fetchDocuments = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-  // Filter and sort documents
-  const filteredDocuments = useMemo(() => {
-    let filtered = [...mockDocuments];
+      let query = supabase
+        .from('documents')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-    // Apply search filter
-    if (filters.searchQuery) {
-      const query = filters.searchQuery.toLowerCase();
-      filtered = filtered.filter(doc => 
-        doc.name.toLowerCase().includes(query) ||
-        doc.description?.toLowerCase().includes(query)
-      );
-    }
-
-    // Apply type filter
-    if (filters.typeFilter !== 'all') {
-      filtered = filtered.filter(doc => doc.type === filters.typeFilter);
-    }
-
-    // Apply sorting
-    filtered.sort((a, b) => {
-      let aValue: string | number;
-      let bValue: string | number;
-
-      switch (filters.sortBy) {
-        case 'name':
-          aValue = a.name.toLowerCase();
-          bValue = b.name.toLowerCase();
-          break;
-        case 'size':
-          aValue = a.size;
-          bValue = b.size;
-          break;
-        case 'uploadDate':
-          aValue = a.uploadDate.getTime();
-          bValue = b.uploadDate.getTime();
-          break;
-        default:
-          return 0;
+      // Apply filters
+      if (filters?.typeFilter && filters.typeFilter !== 'all') {
+        query = query.eq('type', filters.typeFilter);
       }
 
-      if (filters.sortOrder === 'asc') {
-        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-      } else {
-        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      if (filters?.searchQuery) {
+        query = query.or(`name.ilike.%${filters.searchQuery}%,description.ilike.%${filters.searchQuery}%`);
       }
-    });
 
-    return filtered;
+      const { data, error: fetchError } = await query;
+
+      if (fetchError) {
+        throw fetchError;
+      }
+
+      // Transform the data to match our Document interface
+      const transformedDocuments: Document[] = (data || []).map(doc => ({
+        id: doc.id,
+        name: doc.name,
+        type: doc.type as DocumentType,
+        size: doc.size,
+        uploadDate: new Date(doc.created_at),
+        url: doc.url,
+        description: doc.description
+      }));
+
+      // Apply client-side sorting if needed
+      if (filters?.sortBy) {
+        transformedDocuments.sort((a, b) => {
+          let aValue: string | number | Date;
+          let bValue: string | number | Date;
+
+          switch (filters.sortBy) {
+            case 'name':
+              aValue = a.name.toLowerCase();
+              bValue = b.name.toLowerCase();
+              break;
+            case 'size':
+              aValue = a.size;
+              bValue = b.size;
+              break;
+            case 'uploadDate':
+              aValue = a.uploadDate;
+              bValue = b.uploadDate;
+              break;
+            default:
+              return 0;
+          }
+
+          if (filters.sortOrder === 'asc') {
+            return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+          } else {
+            return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+          }
+        });
+      }
+
+      setDocuments(transformedDocuments);
+    } catch (err) {
+      console.error('Error fetching documents:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch documents');
+    } finally {
+      setLoading(false);
+    }
   }, [filters]);
 
-  // Paginate documents
-  const paginatedDocuments = useMemo(() => {
-    const startIndex = (pagination.currentPage - 1) * pagination.itemsPerPage;
-    const endIndex = startIndex + pagination.itemsPerPage;
-    return filteredDocuments.slice(startIndex, endIndex);
-  }, [filteredDocuments, pagination.currentPage, pagination.itemsPerPage]);
+  const deleteDocument = useCallback(async (documentId: string) => {
+    try {
+      // First get the document to get the file path
+      const { data: document, error: fetchError } = await supabase
+        .from('documents')
+        .select('url, user_id')
+        .eq('id', documentId)
+        .single();
 
-  // Update pagination when filtered documents change
-  React.useEffect(() => {
-    const totalPages = Math.ceil(filteredDocuments.length / pagination.itemsPerPage);
-    setPagination(prev => ({
-      ...prev,
-      totalPages,
-      totalItems: filteredDocuments.length,
-      currentPage: Math.min(prev.currentPage, totalPages || 1)
-    }));
-  }, [filteredDocuments.length, pagination.itemsPerPage]);
+      if (fetchError) {
+        throw fetchError;
+      }
 
-  // Event handlers
-  const handleFiltersChange = (newFilters: DocumentFilters) => {
-    setFilters(newFilters);
-    setPagination(prev => ({ ...prev, currentPage: 1 }));
-  };
+      // Get current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !user) {
+        throw new Error('User not authenticated');
+      }
 
-  const handleClearFilters = () => {
-    setFilters({
-      searchQuery: '',
-      typeFilter: 'all',
-      sortBy: 'uploadDate',
-      sortOrder: 'desc'
-    });
-    setPagination(prev => ({ ...prev, currentPage: 1 }));
-  };
+      // Verify user owns the document
+      if (document.user_id !== user.id) {
+        throw new Error('Unauthorized to delete this document');
+      }
 
-  const handlePageChange = (page: number) => {
-    setPagination(prev => ({ ...prev, currentPage: page }));
-  };
+      // Extract file path from URL (remove the base URL part)
+      const urlParts = document.url.split('/storage/v1/object/public/documents/');
+      const filePath = urlParts.length > 1 ? urlParts[1] : null;
+      
+      if (filePath) {
+        // Delete from storage
+        const { error: storageError } = await supabase.storage
+          .from('documents')
+          .remove([filePath]);
 
-  const handleItemsPerPageChange = (itemsPerPage: number) => {
-    setPagination(prev => ({ ...prev, itemsPerPage, currentPage: 1 }));
-  };
+        if (storageError) {
+          console.warn('Storage deletion error:', storageError);
+          // Continue with database deletion even if storage fails
+        }
+      }
 
-  const handleSelectDocument = (documentId: string, selected: boolean) => {
-    setSelection(prev => ({
-      selectedIds: selected 
-        ? [...prev.selectedIds, documentId]
-        : prev.selectedIds.filter(id => id !== documentId),
-      isAllSelected: false
-    }));
-  };
+      // Delete from database (this will be handled by the trigger, but we can also do it manually)
+      const { error: deleteError } = await supabase
+        .from('documents')
+        .delete()
+        .eq('id', documentId);
 
-  const handleSelectAll = (selected: boolean) => {
-    if (selected) {
-      setSelection({
-        selectedIds: paginatedDocuments.map(doc => doc.id),
-        isAllSelected: true
-      });
-    } else {
-      setSelection({
-        selectedIds: [],
-        isAllSelected: false
-      });
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      // Update local state
+      setDocuments(prev => prev.filter(doc => doc.id !== documentId));
+    } catch (err) {
+      console.error('Error deleting document:', err);
+      throw err;
     }
-  };
+  }, []);
 
-  const handleClearSelection = () => {
-    setSelection({ selectedIds: [], isAllSelected: false });
-  };
+  const deleteDocuments = useCallback(async (documentIds: string[]) => {
+    try {
+      // Get current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !user) {
+        throw new Error('User not authenticated');
+      }
 
-  const selectedDocuments = mockDocuments.filter(doc => 
-    selection.selectedIds.includes(doc.id)
-  );
+      // Get documents to get file paths and verify ownership
+      const { data: documents, error: fetchError } = await supabase
+        .from('documents')
+        .select('id, url, user_id')
+        .in('id', documentIds);
+
+      if (fetchError) {
+        throw fetchError;
+      }
+
+      // Verify user owns all documents
+      const unauthorizedDocs = documents?.filter(doc => doc.user_id !== user.id) || [];
+      if (unauthorizedDocs.length > 0) {
+        throw new Error('Unauthorized to delete some documents');
+      }
+
+      // Extract file paths and delete from storage
+      const filePaths = documents
+        ?.map(doc => {
+          const urlParts = doc.url.split('/storage/v1/object/public/documents/');
+          return urlParts.length > 1 ? urlParts[1] : null;
+        })
+        .filter(Boolean) || [];
+
+      if (filePaths.length > 0) {
+        const { error: storageError } = await supabase.storage
+          .from('documents')
+          .remove(filePaths);
+
+        if (storageError) {
+          console.warn('Storage deletion error:', storageError);
+          // Continue with database deletion even if storage fails
+        }
+      }
+
+      // Delete from database
+      const { error: deleteError } = await supabase
+        .from('documents')
+        .delete()
+        .in('id', documentIds);
+
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      // Update local state
+      setDocuments(prev => prev.filter(doc => !documentIds.includes(doc.id)));
+    } catch (err) {
+      console.error('Error deleting documents:', err);
+      throw err;
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchDocuments();
+  }, [fetchDocuments]);
 
   return {
-    // State
-    filters,
-    pagination,
-    selection,
-    filteredDocuments,
-    paginatedDocuments,
-    selectedDocuments,
-    
-    // Actions
-    handleFiltersChange,
-    handleClearFilters,
-    handlePageChange,
-    handleItemsPerPageChange,
-    handleSelectDocument,
-    handleSelectAll,
-    handleClearSelection,
+    documents,
+    loading,
+    error,
+    refetch: fetchDocuments,
+    deleteDocument,
+    deleteDocuments
   };
-}
+};

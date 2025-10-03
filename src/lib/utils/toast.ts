@@ -1,6 +1,6 @@
 'use client';
 
-import { toast } from '@heroui/react';
+import { addToast } from '@heroui/toast';
 
 export interface ToastOptions {
   title?: string;
@@ -14,35 +14,55 @@ export interface ToastOptions {
 
 export const showToast = {
   success: (message: string, options?: ToastOptions) => {
-    toast.success(message, {
-      description: options?.description,
-      duration: options?.duration || 4000,
-      action: options?.action,
-    });
+    try {
+      addToast({
+        type: 'success',
+        title: options?.title || 'Success',
+        description: options?.description || message,
+        duration: options?.duration || 4000,
+      });
+    } catch (error) {
+      console.log('Success:', message);
+    }
   },
 
   error: (message: string, options?: ToastOptions) => {
-    toast.error(message, {
-      description: options?.description,
-      duration: options?.duration || 6000,
-      action: options?.action,
-    });
+    try {
+      addToast({
+        type: 'error',
+        title: options?.title || 'Error',
+        description: options?.description || message,
+        duration: options?.duration || 6000,
+      });
+    } catch (error) {
+      console.error('Error:', message);
+    }
   },
 
   warning: (message: string, options?: ToastOptions) => {
-    toast.warning(message, {
-      description: options?.description,
-      duration: options?.duration || 5000,
-      action: options?.action,
-    });
+    try {
+      addToast({
+        type: 'warning',
+        title: options?.title || 'Warning',
+        description: options?.description || message,
+        duration: options?.duration || 5000,
+      });
+    } catch (error) {
+      console.warn('Warning:', message);
+    }
   },
 
   info: (message: string, options?: ToastOptions) => {
-    toast.info(message, {
-      description: options?.description,
-      duration: options?.duration || 4000,
-      action: options?.action,
-    });
+    try {
+      addToast({
+        type: 'info',
+        title: options?.title || 'Info',
+        description: options?.description || message,
+        duration: options?.duration || 4000,
+      });
+    } catch (error) {
+      console.info('Info:', message);
+    }
   },
 };
 
@@ -87,6 +107,24 @@ export const documentToasts = {
   bulkActionError: (action: string, count: number) => {
     showToast.error(`Failed to ${action} ${count} documents`, {
       description: 'Some documents could not be processed. Please try again',
+    });
+  },
+
+  uploadSuccess: (count: number) => {
+    showToast.success(`Uploaded ${count} ${count === 1 ? 'document' : 'documents'}`, {
+      description: 'All files have been uploaded successfully',
+    });
+  },
+
+  uploadError: (fileName: string) => {
+    showToast.error(`Failed to upload ${fileName}`, {
+      description: 'Please check your connection and try again',
+    });
+  },
+
+  bulkActionSuccess: (action: string, count: number) => {
+    showToast.success(`Successfully ${action}ed ${count} ${count === 1 ? 'document' : 'documents'}`, {
+      description: `All selected documents have been ${action}ed`,
     });
   },
 };
@@ -137,6 +175,30 @@ export const supplierToasts = {
   bulkActionError: (action: string, count: number) => {
     showToast.error(`Failed to ${action} ${count} suppliers`, {
       description: 'Some suppliers could not be processed. Please try again',
+    });
+  },
+
+  createSuccess: (companyName: string) => {
+    showToast.success(`Created ${companyName}`, {
+      description: 'Supplier has been added to your network',
+    });
+  },
+
+  createError: (companyName: string) => {
+    showToast.error(`Failed to create ${companyName}`, {
+      description: 'Please check your information and try again',
+    });
+  },
+
+  updateSuccess: (companyName: string) => {
+    showToast.success(`Updated ${companyName}`, {
+      description: 'Supplier information has been updated',
+    });
+  },
+
+  updateError: (companyName: string) => {
+    showToast.error(`Failed to update ${companyName}`, {
+      description: 'Please try again or contact support if the issue persists',
     });
   },
 };

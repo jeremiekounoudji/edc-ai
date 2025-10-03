@@ -12,22 +12,44 @@ export function generateId(): string {
 /**
  * Formats a date to a readable string
  */
-export function formatDate(date: Date): string {
+export function formatDate(date: Date | string | undefined): string {
+  if (!date) {
+    return 'Unknown';
+  }
+
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  
+  // Check if the date is valid
+  if (isNaN(dateObj.getTime())) {
+    return 'Invalid date';
+  }
+
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-  }).format(date);
+  }).format(dateObj);
 }
 
 /**
  * Formats a date to a relative time string (e.g., "2 hours ago")
  */
-export function formatRelativeTime(date: Date): string {
+export function formatRelativeTime(date: Date | string | undefined): string {
+  if (!date) {
+    return 'Unknown';
+  }
+
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  
+  // Check if the date is valid
+  if (isNaN(dateObj.getTime())) {
+    return 'Invalid date';
+  }
+
   const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
 
   if (diffInSeconds < 60) {
     return 'Just now';
@@ -48,7 +70,7 @@ export function formatRelativeTime(date: Date): string {
     return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
   }
 
-  return formatDate(date);
+  return formatDate(dateObj);
 }
 
 /**

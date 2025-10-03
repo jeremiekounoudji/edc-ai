@@ -82,8 +82,8 @@ export const validateRegisterForm = (data: {
   email: string;
   password: string;
   confirmPassword: string;
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   role: string;
 }): ValidationError[] => {
   const errors: ValidationError[] = [];
@@ -97,11 +97,11 @@ export const validateRegisterForm = (data: {
   const confirmPasswordError = validateConfirmPassword(data.password, data.confirmPassword);
   if (confirmPasswordError) errors.push(confirmPasswordError);
   
-  const firstNameError = validateName(data.firstName, 'firstName');
-  if (firstNameError) errors.push(firstNameError);
+  const firstnameError = validateName(data.firstname, 'firstName');
+  if (firstnameError) errors.push(firstnameError);
   
-  const lastNameError = validateName(data.lastName, 'lastName');
-  if (lastNameError) errors.push(lastNameError);
+  const lastnameError = validateName(data.lastname, 'lastName');
+  if (lastnameError) errors.push(lastnameError);
   
   const roleError = validateRole(data.role);
   if (roleError) errors.push(roleError);

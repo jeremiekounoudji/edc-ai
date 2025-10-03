@@ -8,6 +8,7 @@ import { formatRelativeTime, truncateText } from '../../lib/utils/common';
 import { CreateProjectModal } from '../ui/CreateProjectModal';
 import { EditProjectModal } from '../ui/EditProjectModal';
 import { ProjectContextMenu } from '../ui/ProjectContextMenu';
+import { useProjects } from '@/hooks/useProject';
 
 interface RightSidebarProps {
   isCollapsed?: boolean;
@@ -26,14 +27,14 @@ interface RightSidebarProps {
 export function RightSidebar({
   isCollapsed = false,
   onToggleCollapse,
-  projects = [],
+  // projects = [],
   selectedProjects = [],
   onProjectSelect,
   onProjectCreate,
   onProjectUpdate,
   onProjectDelete,
   onProjectLoadMore,
-  isLoading = false,
+  // isLoading = false,
   hasMore = true,
 }: RightSidebarProps) {
   const [showAllProjects, setShowAllProjects] = useState(false);
@@ -47,65 +48,25 @@ export function RightSidebar({
   } | null>(null);
 
   // Default projects for demonstration
-  const defaultProjects: Project[] = [
-    {
-      id: '1',
-      title: 'Procurement Analytics Dashboard',
-      description: 'Comprehensive dashboard for tracking procurement metrics, supplier performance, and cost analysis across all departments.',
-      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-      updatedAt: new Date(Date.now() - 1 * 60 * 60 * 1000), // 1 hour ago
-      chatSessions: [],
-    },
-    {
-      id: '2',
-      title: 'Supplier Compliance Review',
-      description: 'Quarterly review of supplier compliance with regulatory requirements and quality standards.',
-      createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-      updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000), // 3 hours ago
-      chatSessions: [],
-    },
-    {
-      id: '3',
-      title: 'Contract Management System',
-      description: 'Implementation of new contract management system with automated renewal alerts and compliance tracking.',
-      createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
-      updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-      chatSessions: [],
-    },
-    {
-      id: '4',
-      title: 'Cost Optimization Initiative',
-      description: 'Strategic initiative to identify and implement cost-saving opportunities across procurement processes.',
-      createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000), // 10 days ago
-      updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000), // 4 days ago
-      chatSessions: [],
-    },
-    {
-      id: '5',
-      title: 'Vendor Risk Assessment',
-      description: 'Annual assessment of vendor risks including financial stability, cybersecurity, and operational capacity.',
-      createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), // 2 weeks ago
-      updatedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), // 6 days ago
-      chatSessions: [],
-    },
-  ];
+  const { projects, isLoading, createProject, isError } = useProjects();
 
-  const displayProjects = projects.length > 0 ? projects : defaultProjects;
   
   // Filter projects based on search query
   const filteredProjects = useMemo(() => {
+    // Ensure projects is always an array
+    const safeProjects = Array.isArray(projects) ? projects : [];
+    
     if (!searchQuery.trim()) {
-      return displayProjects;
+      return safeProjects;
     }
     
     const normalizedQuery = searchQuery.toLowerCase().trim();
-    return displayProjects.filter(project =>
+    return safeProjects.filter((project: Project) =>
       project.title.toLowerCase().includes(normalizedQuery) ||
       project.description.toLowerCase().includes(normalizedQuery)
     );
-  }, [displayProjects, searchQuery]);
+  }, [projects, searchQuery]);
   
-  const visibleProjects = showAllProjects ? filteredProjects : filteredProjects.slice(0, 15);
 
   const handleProjectClick = (projectId: string) => {
     onProjectSelect?.(projectId);
@@ -120,7 +81,7 @@ export function RightSidebar({
   };
 
   const handleCreateProject = async (data: { title: string; description: string }) => {
-    await onProjectCreate?.(data);
+    await createProject(data.title, data.description);
     setShowCreateModal(false);
   };
 
@@ -166,7 +127,7 @@ export function RightSidebar({
 
         {/* Collapsed Project List */}
         <div className="flex-1 space-y-2 p-2">
-          {visibleProjects.slice(0, 8).map((project) => (
+          {filteredProjects.map((project: Project) => (
             <div
               key={project.id}
               className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted hover:bg-muted/80 cursor-pointer"
@@ -235,21 +196,23 @@ export function RightSidebar({
       </div>
 
       {/* New Project Button */}
-      <Button
+      <div className="p-2">
+        <Button
           color="warning"
           variant="solid"
           size="md"
           startContent={<FiPlus className="h-4 w-4 flex-shrink-0" />}
           onClick={() => setShowCreateModal(true)}
-          className="w-auto justify-center !flex !items-center rounded-lg m-2"
+          className="w-full justify-center !flex !items-center rounded-lg"
         >
           <span className="leading-none">New Project</span>
         </Button>
+      </div>
 
       {/* Project List */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
         <div className="space-y-2 p-4">
-          {visibleProjects.map((project) => (
+          {filteredProjects.map((project: Project) => (
             <Card
               key={project.id}
               isPressable
@@ -267,11 +230,12 @@ export function RightSidebar({
                     </p>
                   </div>
                   <Button
-                    isIconOnly
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => handleProjectMenuClick(e, project)}
-                    className="h-6 w-6 min-w-6 opacity-0 group-hover:opacity-100 transition-opacity !flex !items-center !justify-center flex-shrink-0 rounded-lg"
+                  
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleProjectMenuClick(e, project);
+                    }}
+                    className="h-6 w-6 min-w-6 opacity-0 group-hover:opacity-100 transition-opacity !flex !items-center !justify-center flex-shrink-0 rounded-lg bg-transparent border-0 hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer"
                   >
                     <FiMoreHorizontal className="h-3 w-3" />
                   </Button>
@@ -284,12 +248,34 @@ export function RightSidebar({
           ))}
 
           {/* No Results Message */}
-          {filteredProjects.length === 0 && searchQuery.trim() && (
+          {filteredProjects.length === 0 && searchQuery.trim() && !isError && (
             <div className="text-center py-8">
               <FiFolder className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">No projects found</p>
               <p className="text-sm text-muted-foreground mt-1">
                 Try adjusting your search terms
+              </p>
+            </div>
+          )}
+
+          {/* Error Message */}
+          {isError && (
+            <div className="text-center py-8">
+              <FiFolder className="h-12 w-12 text-red-400 mx-auto mb-4" />
+              <p className="text-red-600">Failed to load projects</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Please check your authentication or try refreshing the page
+              </p>
+            </div>
+          )}
+
+          {/* Empty State */}
+          {filteredProjects.length === 0 && !searchQuery.trim() && !isLoading && !isError && (
+            <div className="text-center py-8">
+              <FiFolder className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">No projects yet</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Create your first project to get started
               </p>
             </div>
           )}

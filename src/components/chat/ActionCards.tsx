@@ -1,13 +1,14 @@
 import React from 'react';
 import { Card, CardBody } from '@heroui/card';
-import { FiFileText, FiImage, FiUser, FiCode } from 'react-icons/fi';
+import { FiFileText, FiImage, FiUser, FiCode, FiShoppingCart, FiHelpCircle, FiSearch } from 'react-icons/fi';
 import { ActionCard } from '../../lib/types/chat';
 
 interface ActionCardsProps {
   onActionCardClick?: (prompt: string) => void;
+  type?: 'general' | 'conversation';
 }
 
-const actionCards: ActionCard[] = [
+const generalActionCards: ActionCard[] = [
   {
     id: 'write-copy',
     title: 'Write copy',
@@ -42,11 +43,49 @@ const actionCards: ActionCard[] = [
   },
 ];
 
+const conversationActionCards: ActionCard[] = [
+  {
+    id: 'procurement',
+    title: 'Start a Procurement',
+    description: 'Begin a new procurement process',
+    color: 'blue',
+    icon: 'FiShoppingCart',
+    prompt: 'Help me start a new procurement process. What are the key steps I should follow?',
+  },
+  {
+    id: 'advice',
+    title: 'Ask Advice',
+    description: 'Get expert consultation',
+    color: 'green',
+    icon: 'FiHelpCircle',
+    prompt: 'I need advice on best practices for supplier management and compliance.',
+  },
+  {
+    id: 'inspect',
+    title: 'Inspect a Project',
+    description: 'Analyze project details',
+    color: 'pink',
+    icon: 'FiSearch',
+    prompt: 'Help me analyze and inspect the current project status, risks, and opportunities.',
+  },
+  {
+    id: 'report',
+    title: 'Generate Report',
+    description: 'Create comprehensive reports',
+    color: 'orange',
+    icon: 'FiFileText',
+    prompt: 'Generate a comprehensive report with analytics and insights for this project.',
+  },
+];
+
 const iconMap = {
   FiFileText: FiFileText,
   FiImage: FiImage,
   FiUser: FiUser,
   FiCode: FiCode,
+  FiShoppingCart: FiShoppingCart,
+  FiHelpCircle: FiHelpCircle,
+  FiSearch: FiSearch,
 };
 
 const colorClasses = {
@@ -63,9 +102,15 @@ const colorStyles = {
   pink: { backgroundColor: 'hsl(var(--action-pink))' },
 };
 
-export function ActionCards({ onActionCardClick }: ActionCardsProps) {
+export function   ActionCards({ onActionCardClick, type = 'general' }: ActionCardsProps) {
+  const actionCards = type === 'conversation' ? conversationActionCards : conversationActionCards;
+  
   const handleCardClick = (card: ActionCard) => {
-    onActionCardClick?.(card.prompt);
+    
+    if(type==='conversation'){
+      onActionCardClick?.(card.prompt);
+    }
+    
   };
 
   return (

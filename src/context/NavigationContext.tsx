@@ -11,7 +11,7 @@ interface NavigationProviderProps {
   initialTab?: ActiveTab;
 }
 
-export function NavigationProvider({ children, initialTab = 'ai-chat' }: NavigationProviderProps) {
+export function NavigationProvider({ children, initialTab = 'projects' }: NavigationProviderProps) {
   const [navigationState, setNavigationState] = useState<NavigationState>({
     activeTab: initialTab,
     tabHistory: [initialTab],

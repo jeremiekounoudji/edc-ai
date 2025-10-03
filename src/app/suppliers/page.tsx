@@ -2,15 +2,17 @@
 
 import React, { useState, useMemo } from 'react';
 import { Button } from '@heroui/react';
-import { FiPlus, FiGrid, FiList } from 'react-icons/fi';
+import { FiPlus, FiGrid, FiList, FiFilter } from 'react-icons/fi';
 import { Supplier, SupplierFilters, SupplierPagination, SupplierSelection } from '../../lib/types/suppliers';
-import { mockSuppliers } from '../../lib/mockData/suppliers';
+import { useSuppliers } from '../../hooks/useSuppliers';
 import { SupplierFilters as SupplierFiltersComponent } from '../../components/suppliers/SupplierFilters';
 import { SupplierGrid } from '../../components/suppliers/SupplierGrid';
 import { SupplierPagination as SupplierPaginationComponent } from '../../components/suppliers/SupplierPagination';
 import { SupplierBulkActions } from '../../components/suppliers/SupplierBulkActions';
 import { SupplierDeleteModal } from '../../components/suppliers/SupplierDeleteModal';
+import { SupplierCreateModal } from '../../components/suppliers/SupplierCreateModal';
 import { ContactPopover } from '../../components/suppliers/ContactPopover';
+import { supplierToasts } from '../../lib/utils/toast';
 
 export default function SuppliersPage() {
   // State management
@@ -36,6 +38,7 @@ export default function SuppliersPage() {
 
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showSelection, setShowSelection] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
   const [contactPopover, setContactPopover] = useState<{
     isOpen: boolean;
     supplier: Supplier | null;
@@ -52,64 +55,13 @@ export default function SuppliersPage() {
     suppliers: [],
     isBulk: false
   });
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
-  // Filter and sort suppliers
-  const filteredSuppliers = useMemo(() => {
-    let filtered = [...mockSuppliers];
+  // Fetch suppliers from Supabase
+  const { suppliers: allSuppliers, loading, error, refetch, deleteSupplier, deleteSuppliers, createSupplier } = useSuppliers(filters);
 
-    // Apply search filter
-    if (filters.searchQuery) {
-      const query = filters.searchQuery.toLowerCase();
-      filtered = filtered.filter(supplier => 
-        supplier.companyName.toLowerCase().includes(query) ||
-        supplier.description.toLowerCase().includes(query) ||
-        supplier.sector.toLowerCase().includes(query) ||
-        supplier.domain.toLowerCase().includes(query)
-      );
-    }
-
-    // Apply sector filter
-    if (filters.sectorFilter !== 'all') {
-      filtered = filtered.filter(supplier => supplier.sector === filters.sectorFilter);
-    }
-
-    // Apply rating range filter
-    filtered = filtered.filter(supplier => 
-      supplier.rating >= filters.ratingRange.min && 
-      supplier.rating <= filters.ratingRange.max
-    );
-
-    // Apply sorting
-    filtered.sort((a, b) => {
-      let aValue: string | number;
-      let bValue: string | number;
-
-      switch (filters.sortBy) {
-        case 'companyName':
-          aValue = a.companyName.toLowerCase();
-          bValue = b.companyName.toLowerCase();
-          break;
-        case 'rating':
-          aValue = a.rating;
-          bValue = b.rating;
-          break;
-        case 'sector':
-          aValue = a.sector.toLowerCase();
-          bValue = b.sector.toLowerCase();
-          break;
-        default:
-          return 0;
-      }
-
-      if (filters.sortOrder === 'asc') {
-        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-      } else {
-        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-      }
-    });
-
-    return filtered;
-  }, [filters]);
+  // Use suppliers from hook (filtering and sorting is handled in the hook)
+  const filteredSuppliers = allSuppliers;
 
   // Paginate suppliers
   const paginatedSuppliers = useMemo(() => {
@@ -211,23 +163,93 @@ export default function SuppliersPage() {
     });
   };
 
-  const handleConfirmDelete = () => {
-    // Mock delete functionality
-    console.log('Deleting suppliers:', deleteModal.suppliers.map(s => s.companyName));
-    // In a real app, this would remove suppliers from the data source
+  const handleConfirmDelete = async () => {
+    const suppliersToDelete = deleteModal.suppliers;
+    const isBulkOperation = deleteModal.isBulk;
     
-    // Clear selection and close modal
-    setSelection({ selectedIds: [], isAllSelected: false });
-    setDeleteModal({ isOpen: false, suppliers: [], isBulk: false });
+    try {
+      if (isBulkOperation) {
+        const supplierIds = suppliersToDelete.map(s => s.id);
+        await deleteSuppliers(supplierIds);
+      } else {
+        await deleteSupplier(suppliersToDelete[0].id);
+      }
+      
+      // Clear selection and close modal first
+      setSelection({ selectedIds: [], isAllSelected: false });
+      setDeleteModal({ isOpen: false, suppliers: [], isBulk: false });
+      
+      // Show success toast after modal closes
+      setTimeout(() => {
+        if (isBulkOperation) {
+          supplierToasts.bulkDeleteSuccess(suppliersToDelete.length);
+        } else {
+          supplierToasts.deleteSuccess(suppliersToDelete[0].companyName);
+        }
+      }, 100);
+      
+    } catch (error) {
+      console.error('Error deleting suppliers:', error);
+      
+      // Close modal first, then show error
+      setSelection({ selectedIds: [], isAllSelected: false });
+      setDeleteModal({ isOpen: false, suppliers: [], isBulk: false });
+      
+      setTimeout(() => {
+        if (isBulkOperation) {
+          supplierToasts.bulkActionError('delete', suppliersToDelete.length);
+        } else {
+          supplierToasts.deleteError(suppliersToDelete[0].companyName);
+        }
+      }, 100);
+    }
   };
 
   const handleClearSelection = () => {
     setSelection({ selectedIds: [], isAllSelected: false });
   };
 
-  const selectedSuppliers = mockSuppliers.filter(supplier => 
+  const handleCreateSupplier = async (supplierData: Omit<Supplier, 'id'>) => {
+    try {
+      await createSupplier(supplierData);
+      supplierToasts.createSuccess(supplierData.companyName);
+      setSelection({ selectedIds: [], isAllSelected: false }); // Clear selection
+    } catch (error) {
+      console.error('Error creating supplier:', error);
+      supplierToasts.createError(supplierData.companyName);
+      throw error; // Re-throw to let modal handle it
+    }
+  };
+
+  const selectedSuppliers = allSuppliers.filter(supplier => 
     selection.selectedIds.includes(supplier.id)
   );
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading suppliers...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <p className="text-danger mb-4">Error loading suppliers: {error}</p>
+          <Button color="primary" onClick={() => refetch()}>
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -278,12 +300,23 @@ export default function SuppliersPage() {
             Select
           </Button>
 
+          {/* Filter Toggle Button */}
+          <Button
+            size="sm"
+            variant={showFilters ? 'solid' : 'bordered'}
+            color={showFilters ? 'primary' : 'default'}
+            startContent={<FiFilter className="h-4 w-4" />}
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            {showFilters ? 'Hide Filters' : 'Show Filters'}
+          </Button>
+
           {/* Add Supplier Button */}
           <Button
             size="sm"
             color="primary"
             startContent={<FiPlus className="h-4 w-4" />}
-            onClick={() => console.log('Add supplier clicked')}
+            onClick={() => setShowCreateModal(true)}
           >
             Add Supplier
           </Button>
@@ -291,15 +324,17 @@ export default function SuppliersPage() {
       </div>
 
       {/* Filters */}
-      <div className="p-6 pb-0">
-        <SupplierFiltersComponent
-          filters={filters}
-          onFiltersChange={handleFiltersChange}
-          onClearFilters={handleClearFilters}
-          totalSuppliers={mockSuppliers.length}
-          filteredCount={filteredSuppliers.length}
-        />
-      </div>
+      {showFilters && (
+        <div className="p-6 pb-0">
+          <SupplierFiltersComponent
+            filters={filters}
+            onFiltersChange={handleFiltersChange}
+            onClearFilters={handleClearFilters}
+            totalSuppliers={allSuppliers.length}
+            filteredCount={filteredSuppliers.length}
+          />
+        </div>
+      )}
 
       {/* Content */}
       <div className="flex-1 p-6 pt-4 overflow-auto">
@@ -343,6 +378,13 @@ export default function SuppliersPage() {
           trigger={<div />}
         />
       )}
+
+      {/* Create Supplier Modal */}
+      <SupplierCreateModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onCreateSupplier={handleCreateSupplier}
+      />
 
       {/* Delete Confirmation Modal */}
       <SupplierDeleteModal

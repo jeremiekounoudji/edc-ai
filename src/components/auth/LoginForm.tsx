@@ -17,7 +17,7 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
-  const { login, loginWithGoogle, isLoading } = useAuth();
+  const { login, isLoading } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -38,19 +38,19 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
     e.preventDefault();
     
     // Validate form
-    // const validationErrors = validateLoginForm(formData.email, formData.password);
-    // if (validationErrors.length > 0) {
-    //   // Show validation errors in toast
-    //   validationErrors.forEach(error => {
-    //     addToast({
-    //       title: 'Validation Error',
-    //       description: error.message,
-    //       color: 'danger',
-    //       variant: 'flat'
-    //     });
-    //   });
-    //   return;
-    // }
+    const validationErrors = validateLoginForm(formData.email, formData.password);
+    if (validationErrors.length > 0) {
+      // Show validation errors in toast
+      validationErrors.forEach(error => {
+        addToast({
+          title: 'Validation Error',
+          description: error.message,
+          color: 'danger',
+          variant: 'flat'
+        });
+      });
+      return;
+    }
 
     // Clear previous errors
     setErrors([]);
@@ -76,30 +76,30 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setIsGoogleLoading(true);
-    try {
-      const result = await loginWithGoogle();
-      if (result.success) {
-        addToast({
-          title: 'Success',
-          description: 'Google login successful!',
-          color: 'success',
-          variant: 'flat'
-        });
-        onSuccess?.();
-      } else {
-        addToast({
-          title: 'Google Login Failed',
-          description: result.message,
-          color: 'danger',
-          variant: 'flat'
-        });
-      }
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
+  // const handleGoogleLogin = async () => {
+  //   setIsGoogleLoading(true);
+  //   try {
+  //     const result = await loginWithGoogle();
+  //     if (result.success) {
+  //       addToast({
+  //         title: 'Success',
+  //         description: 'Google login successful!',
+  //         color: 'success',
+  //         variant: 'flat'
+  //       });
+  //       onSuccess?.();
+  //     } else {
+  //       addToast({
+  //         title: 'Google Login Failed',
+  //         description: result.message,
+  //         color: 'danger',
+  //         variant: 'flat'
+  //       });
+  //     }
+  //   } finally {
+  //     setIsGoogleLoading(false);
+  //   }
+  // };
 
   const getFieldError = (field: string) => {
     return errors.find(error => error.field === field)?.message;
@@ -217,7 +217,7 @@ export function LoginForm({ onSuccess, onForgotPassword }: LoginFormProps) {
           variant="bordered"
           size="lg"
           className="w-full"
-          onClick={handleGoogleLogin}
+          // onClick={handleGoogleLogin}
           disabled={isGoogleLoading || isLoading}
         >
           {isGoogleLoading ? (

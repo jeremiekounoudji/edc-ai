@@ -1,6 +1,7 @@
-import { useState, useCallback } from 'react';
-import { AuthState, User, LoginCredentials, RegisterData, ForgotPasswordData, OTPData } from '@/types/auth';
-import { mockAuthService } from '@/lib/auth/mockAuth';
+import { useState, useCallback } from "react";
+import { AuthState, User, LoginCredentials, RegisterData } from "@/types/auth";
+import { logInfo } from "@/lib/utils/logger";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const initialState: AuthState = {
   user: null,
@@ -12,209 +13,103 @@ const initialState: AuthState = {
 export const useAuth = () => {
   const [authState, setAuthState] = useState<AuthState>(initialState);
 
-  const setLoading = useCallback((isLoading: boolean) => {
-    setAuthState(prev => ({ ...prev, isLoading }));
-  }, []);
+  const setLoading = (isLoading: boolean) =>
+    setAuthState((prev) => ({ ...prev, isLoading }));
 
-  const setError = useCallback((error: string | null) => {
-    setAuthState(prev => ({ ...prev, error }));
-  }, []);
+  const setError = (error: string | null) =>
+    setAuthState((prev) => ({ ...prev, error }));
 
+  /** 🔹 LOGIN */
   const login = useCallback(async (credentials: LoginCredentials) => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response = await mockAuthService.login(credentials);
-      
-      if (response.success && response.user) {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(credentials),
+      });
+
+      const data = await res.json();
+      logInfo("Login result", data);
+      if (res.ok) {
         setAuthState({
-          user: response.user,
+          user: data.user,
           isAuthenticated: true,
           isLoading: false,
           error: null,
         });
-        return { success: true, message: response.message };
+        useAuthStore.getState().setSession(data.session);
+        useAuthStore.getState().setUser(data.user);
+        return { success: true, message: data.message };
       } else {
-        setError(response.message);
-        return { success: false, message: response.message };
+        setError(data.error || "Login failed");
+        return { success: false, message: data.error || "Login failed" };
       }
-    } catch (error) {
-      const errorMessage = 'An unexpected error occurred during login';
-      setError(errorMessage);
-      return { success: false, message: errorMessage };
+    } catch (err) {
+      logInfo("Unexpected error during login", { error: err });
+      setError("Unexpected error during login");
+      return { success: false, message: "Unexpected error during login" };
     } finally {
       setLoading(false);
     }
-  }, [setLoading, setError]);
+  }, []);
 
+  /** 🔹 REGISTER */
   const register = useCallback(async (data: RegisterData) => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response = await mockAuthService.register(data);
-      
-      if (response.success && response.user) {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+      logInfo("Registration result", result);
+
+      if (res.ok && result.user) {
         setAuthState({
-          user: response.user,
+          user: result.user,
           isAuthenticated: true,
           isLoading: false,
           error: null,
         });
-        return { success: true, message: response.message };
+        return { success: true, message: result.message };
       } else {
-        setError(response.message);
-        return { success: false, message: response.message };
+        setError(result.error || "Registration failed");
+        return {
+          success: false,
+          message: result.error || "Registration failed",
+        };
       }
-    } catch (error) {
-      const errorMessage = 'An unexpected error occurred during registration';
-      setError(errorMessage);
-      return { success: false, message: errorMessage };
+    } catch (err) {
+      setError("Unexpected error during registration");
+      return {
+        success: false,
+        message: "Unexpected error during registration",
+      };
     } finally {
       setLoading(false);
     }
-  }, [setLoading, setError]);
+  }, []);
 
-  const forgotPassword = useCallback(async (data: ForgotPasswordData) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const response = await mockAuthService.forgotPassword(data);
-      
-      if (response.success) {
-        return { success: true, message: response.message };
-      } else {
-        setError(response.message);
-        return { success: false, message: response.message };
-      }
-    } catch (error) {
-      const errorMessage = 'An unexpected error occurred';
-      setError(errorMessage);
-      return { success: false, message: errorMessage };
-    } finally {
-      setLoading(false);
-    }
-  }, [setLoading, setError]);
-
-  const sendOTP = useCallback(async (email: string) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const response = await mockAuthService.sendOTP(email);
-      
-      if (response.success) {
-        return { success: true, message: response.message };
-      } else {
-        setError(response.message);
-        return { success: false, message: response.message };
-      }
-    } catch (error) {
-      const errorMessage = 'An unexpected error occurred';
-      setError(errorMessage);
-      return { success: false, message: errorMessage };
-    } finally {
-      setLoading(false);
-    }
-  }, [setLoading, setError]);
-
-  const verifyOTP = useCallback(async (data: OTPData) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const response = await mockAuthService.verifyOTP(data);
-      
-      if (response.success) {
-        return { success: true, message: response.message };
-      } else {
-        setError(response.message);
-        return { success: false, message: response.message };
-      }
-    } catch (error) {
-      const errorMessage = 'An unexpected error occurred';
-      setError(errorMessage);
-      return { success: false, message: errorMessage };
-    } finally {
-      setLoading(false);
-    }
-  }, [setLoading, setError]);
-
-  const loginWithGoogle = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const response = await mockAuthService.loginWithGoogle();
-      
-      if (response.success && response.user) {
-        setAuthState({
-          user: response.user,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-        });
-        return { success: true, message: response.message };
-      } else {
-        setError(response.message);
-        return { success: false, message: response.message };
-      }
-    } catch (error) {
-      const errorMessage = 'An unexpected error occurred during Google login';
-      setError(errorMessage);
-      return { success: false, message: errorMessage };
-    } finally {
-      setLoading(false);
-    }
-  }, [setLoading, setError]);
-
-  const registerWithGoogle = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const response = await mockAuthService.registerWithGoogle();
-      
-      if (response.success && response.user) {
-        setAuthState({
-          user: response.user,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-        });
-        return { success: true, message: response.message };
-      } else {
-        setError(response.message);
-        return { success: false, message: response.message };
-      }
-    } catch (error) {
-      const errorMessage = 'An unexpected error occurred during Google registration';
-      setError(errorMessage);
-      return { success: false, message: errorMessage };
-    } finally {
-      setLoading(false);
-    }
-  }, [setLoading, setError]);
-
-  const logout = useCallback(() => {
+  /** 🔹 LOGOUT */
+  const logout = useCallback(async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
     setAuthState(initialState);
   }, []);
 
-  const clearError = useCallback(() => {
-    setError(null);
-  }, [setError]);
+  /** 🔹 CLEAR ERRORS */
+  const clearError = () => setError(null);
 
   return {
     ...authState,
     login,
     register,
-    forgotPassword,
-    sendOTP,
-    verifyOTP,
-    loginWithGoogle,
-    registerWithGoogle,
     logout,
     clearError,
   };

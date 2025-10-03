@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@heroui/react';
-import { FiTrash2, FiAlertTriangle, FiBuilding } from 'react-icons/fi';
+import { Button } from '@heroui/button';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal';
+import { FiTrash2, FiAlertTriangle, FiBriefcase } from 'react-icons/fi';
 import { Supplier } from '../../lib/types/suppliers';
 
 interface SupplierDeleteModalProps {
@@ -67,7 +68,7 @@ export function SupplierDeleteModal({
                     <ul className="space-y-1">
                       {suppliers.slice(0, 5).map((supplier) => (
                         <li key={supplier.id} className="text-sm text-muted-foreground flex items-center gap-2">
-                          <FiBuilding className="h-3 w-3 text-danger" />
+                          <FiBriefcase className="h-3 w-3 text-danger" />
                           <span className="truncate">{supplier.companyName}</span>
                           <span className="text-xs text-muted-foreground">
                             ({supplier.sector})

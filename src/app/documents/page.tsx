@@ -2,14 +2,16 @@
 
 import React, { useState, useMemo } from 'react';
 import { Button } from '@heroui/react';
-import { FiPlus, FiGrid, FiList } from 'react-icons/fi';
+import { FiPlus, FiGrid, FiList, FiFilter } from 'react-icons/fi';
 import { Document, DocumentFilters, DocumentPagination, DocumentSelection } from '../../lib/types/documents';
-import { mockDocuments } from '../../lib/mockData/documents';
+import { useDocuments } from '../../hooks/useDocuments';
 import { DocumentFilters as DocumentFiltersComponent } from '../../components/documents/DocumentFilters';
 import { DocumentGrid } from '../../components/documents/DocumentGrid';
 import { DocumentPagination as DocumentPaginationComponent } from '../../components/documents/DocumentPagination';
 import { DocumentBulkActions } from '../../components/documents/DocumentBulkActions';
 import { DocumentDeleteModal } from '../../components/documents/DocumentDeleteModal';
+import { DocumentUploadModal } from '../../components/documents/DocumentUploadModal';
+import { documentToasts } from '../../lib/utils/toast';
 
 export default function DocumentsPage() {
   // State management
@@ -34,6 +36,8 @@ export default function DocumentsPage() {
 
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showSelection, setShowSelection] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
     documents: Document[];
@@ -44,55 +48,11 @@ export default function DocumentsPage() {
     isBulk: false
   });
 
-  // Filter and sort documents
-  const filteredDocuments = useMemo(() => {
-    let filtered = [...mockDocuments];
+  // Fetch documents from Supabase
+  const { documents: allDocuments, loading, error, refetch, deleteDocument, deleteDocuments } = useDocuments(filters);
 
-    // Apply search filter
-    if (filters.searchQuery) {
-      const query = filters.searchQuery.toLowerCase();
-      filtered = filtered.filter(doc => 
-        doc.name.toLowerCase().includes(query) ||
-        doc.description?.toLowerCase().includes(query)
-      );
-    }
-
-    // Apply type filter
-    if (filters.typeFilter !== 'all') {
-      filtered = filtered.filter(doc => doc.type === filters.typeFilter);
-    }
-
-    // Apply sorting
-    filtered.sort((a, b) => {
-      let aValue: string | number;
-      let bValue: string | number;
-
-      switch (filters.sortBy) {
-        case 'name':
-          aValue = a.name.toLowerCase();
-          bValue = b.name.toLowerCase();
-          break;
-        case 'size':
-          aValue = a.size;
-          bValue = b.size;
-          break;
-        case 'uploadDate':
-          aValue = a.uploadDate.getTime();
-          bValue = b.uploadDate.getTime();
-          break;
-        default:
-          return 0;
-      }
-
-      if (filters.sortOrder === 'asc') {
-        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-      } else {
-        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-      }
-    });
-
-    return filtered;
-  }, [filters]);
+  // Use documents from hook (filtering and sorting is handled in the hook)
+  const filteredDocuments = allDocuments;
 
   // Paginate documents
   const paginatedDocuments = useMemo(() => {
@@ -126,6 +86,12 @@ export default function DocumentsPage() {
       sortOrder: 'desc'
     });
     setPagination(prev => ({ ...prev, currentPage: 1 }));
+  };
+
+  const handleUploadComplete = () => {
+    refetch(); // Refresh documents after upload
+    setSelection({ selectedIds: [], isAllSelected: false }); // Clear selection
+    documentToasts.bulkActionSuccess('upload', 1); // Show success message
   };
 
   const handlePageChange = (page: number) => {
@@ -187,23 +153,81 @@ export default function DocumentsPage() {
     });
   };
 
-  const handleConfirmDelete = () => {
-    // Mock delete functionality
-    console.log('Deleting documents:', deleteModal.documents.map(d => d.name));
-    // In a real app, this would remove documents from the data source
+  const handleConfirmDelete = async () => {
+    const documentsToDelete = deleteModal.documents;
+    const isBulkOperation = deleteModal.isBulk;
     
-    // Clear selection and close modal
-    setSelection({ selectedIds: [], isAllSelected: false });
-    setDeleteModal({ isOpen: false, documents: [], isBulk: false });
+    try {
+      if (isBulkOperation) {
+        const documentIds = documentsToDelete.map(d => d.id);
+        await deleteDocuments(documentIds);
+      } else {
+        await deleteDocument(documentsToDelete[0].id);
+      }
+      
+      // Clear selection and close modal first
+      setSelection({ selectedIds: [], isAllSelected: false });
+      setDeleteModal({ isOpen: false, documents: [], isBulk: false });
+      
+      // Show success toast after modal closes
+      setTimeout(() => {
+        if (isBulkOperation) {
+          documentToasts.bulkDeleteSuccess(documentsToDelete.length);
+        } else {
+          documentToasts.deleteSuccess(documentsToDelete[0].name);
+        }
+      }, 100);
+      
+    } catch (error) {
+      console.error('Error deleting documents:', error);
+      
+      // Close modal first, then show error
+      setSelection({ selectedIds: [], isAllSelected: false });
+      setDeleteModal({ isOpen: false, documents: [], isBulk: false });
+      
+      setTimeout(() => {
+        if (isBulkOperation) {
+          documentToasts.bulkActionError('delete', documentsToDelete.length);
+        } else {
+          documentToasts.deleteError(documentsToDelete[0].name);
+        }
+      }, 100);
+    }
   };
 
   const handleClearSelection = () => {
     setSelection({ selectedIds: [], isAllSelected: false });
   };
 
-  const selectedDocuments = mockDocuments.filter(doc => 
+  const selectedDocuments = allDocuments.filter(doc => 
     selection.selectedIds.includes(doc.id)
   );
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading documents...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <p className="text-danger mb-4">Error loading documents: {error}</p>
+          <Button color="primary" onClick={() => refetch()}>
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -254,12 +278,23 @@ export default function DocumentsPage() {
             Select
           </Button>
 
+          {/* Filter Toggle Button */}
+          <Button
+            size="sm"
+            variant={showFilters ? 'solid' : 'bordered'}
+            color={showFilters ? 'primary' : 'default'}
+            startContent={<FiFilter className="h-4 w-4" />}
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            {showFilters ? 'Hide Filters' : 'Show Filters'}
+          </Button>
+
           {/* Add Document Button */}
           <Button
             size="sm"
             color="primary"
             startContent={<FiPlus className="h-4 w-4" />}
-            onClick={() => console.log('Add document clicked')}
+            onClick={() => setShowUploadModal(true)}
           >
             Add Document
           </Button>
@@ -267,15 +302,17 @@ export default function DocumentsPage() {
       </div>
 
       {/* Filters */}
-      <div className="p-6 pb-0">
-        <DocumentFiltersComponent
-          filters={filters}
-          onFiltersChange={handleFiltersChange}
-          onClearFilters={handleClearFilters}
-          totalDocuments={mockDocuments.length}
-          filteredCount={filteredDocuments.length}
-        />
-      </div>
+      {showFilters && (
+        <div className="p-6 pb-0">
+          <DocumentFiltersComponent
+            filters={filters}
+            onFiltersChange={handleFiltersChange}
+            onClearFilters={handleClearFilters}
+            totalDocuments={allDocuments.length}
+            filteredCount={filteredDocuments.length}
+          />
+        </div>
+      )}
 
       {/* Content */}
       <div className="flex-1 p-6 pt-4 overflow-auto">
@@ -307,6 +344,13 @@ export default function DocumentsPage() {
         onBulkDownload={handleBulkDownload}
         onBulkDelete={handleBulkDelete}
         onClearSelection={handleClearSelection}
+      />
+
+      {/* Upload Modal */}
+      <DocumentUploadModal
+        isOpen={showUploadModal}
+        onClose={() => setShowUploadModal(false)}
+        onUploadComplete={handleUploadComplete}
       />
 
       {/* Delete Confirmation Modal */}

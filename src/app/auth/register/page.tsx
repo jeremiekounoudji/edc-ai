@@ -9,7 +9,7 @@ export default function RegisterPage() {
 
   const handleRegisterSuccess = () => {
     // Redirect to chat page after successful registration
-    router.push('/chat');
+    router.push('/auth/login');
   };
 
   const handleLogin = () => {

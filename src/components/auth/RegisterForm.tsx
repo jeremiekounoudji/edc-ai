@@ -19,13 +19,13 @@ interface RegisterFormProps {
 }
 
 export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
-  const { register, registerWithGoogle, isLoading } = useAuth();
+  const { register, isLoading } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     confirmPassword: '',
-    firstName: '',
-    lastName: '',
+    firstname: '',
+    lastname: '',
     role: '' as UserRole,
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -85,30 +85,30 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
     }
   };
 
-  const handleGoogleRegister = async () => {
-    setIsGoogleLoading(true);
-    try {
-      const result = await registerWithGoogle();
-      if (result.success) {
-        addToast({
-          title: 'Success',
-          description: 'Google registration successful!',
-          color: 'success',
-          variant: 'flat'
-        });
-        onSuccess?.();
-      } else {
-        addToast({
-          title: 'Google Registration Failed',
-          description: result.message,
-          color: 'danger',
-          variant: 'flat'
-        });
-      }
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
+  // const handleGoogleRegister = async () => {
+  //   setIsGoogleLoading(true);
+  //   try {
+  //     const result = await registerWithGoogle();
+  //     if (result.success) {
+  //       addToast({
+  //         title: 'Success',
+  //         description: 'Google registration successful!',
+  //         color: 'success',
+  //         variant: 'flat'
+  //       });
+  //       onSuccess?.();
+  //     } else {
+  //       addToast({
+  //         title: 'Google Registration Failed',
+  //         description: result.message,
+  //         color: 'danger',
+  //         variant: 'flat'
+  //       });
+  //     }
+  //   } finally {
+  //     setIsGoogleLoading(false);
+  //   }
+  // };
 
   const getFieldError = (field: string) => {
     return errors.find(error => error.field === field)?.message;
@@ -139,11 +139,11 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
                 type="text"
                 label="First Name"
                 placeholder="Enter first name"
-                value={formData.firstName}
-                onChange={(e) => handleInputChange('firstName', e.target.value)}
+                value={formData.firstname}
+                onChange={(e) => handleInputChange('firstname', e.target.value)}
                 startContent={<FiUser className="text-gray-400" />}
-                isInvalid={!!getFieldError('firstName')}
-                errorMessage={getFieldError('firstName')}
+                isInvalid={!!getFieldError('firstname')}
+                errorMessage={getFieldError('firstname')}
                 variant="bordered"
                 size="lg"
                 required
@@ -154,11 +154,11 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
                 type="text"
                 label="Last Name"
                 placeholder="Enter last name"
-                value={formData.lastName}
-                onChange={(e) => handleInputChange('lastName', e.target.value)}
+                value={formData.lastname}
+                onChange={(e) => handleInputChange('lastname', e.target.value)}
                 startContent={<FiUser className="text-gray-400" />}
-                isInvalid={!!getFieldError('lastName')}
-                errorMessage={getFieldError('lastName')}
+                isInvalid={!!getFieldError('lastname')}
+                errorMessage={getFieldError('lastname')}
                 variant="bordered"
                 size="lg"
                 required
@@ -303,7 +303,7 @@ export function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
           variant="bordered"
           size="lg"
           className="w-full"
-          onClick={handleGoogleRegister}
+          // onClick={handleGoogleRegister}
           disabled={isGoogleLoading || isLoading}
         >
           {isGoogleLoading ? (

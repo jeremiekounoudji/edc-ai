@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@heroui/react';
+import { Button } from '@heroui/button';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal';
 import { FiTrash2, FiAlertTriangle } from 'react-icons/fi';
 import { Document } from '../../lib/types/documents';
 
