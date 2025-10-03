@@ -217,6 +217,7 @@ export const getDocumentTypes = (): DocumentType[] => {
 // Helper function to get document type labels
 export const getDocumentTypeLabels = (): Record<DocumentType, string> => {
   return {
+    
     invoice: 'Invoices',
     receipt: 'Receipts',
     specification: 'Specifications',

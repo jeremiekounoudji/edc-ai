@@ -204,7 +204,7 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
               placeholder="Select document type"
             >
               {documentTypes.map((type) => (
-                <SelectItem key={type.value} value={type.value}>
+                <SelectItem key={type.value}>
                   {type.label}
                 </SelectItem>
               ))}

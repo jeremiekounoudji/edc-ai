@@ -38,7 +38,10 @@ export function DocumentGrid({
   // Group documents by type if groupByType is true
   const groupedDocuments = React.useMemo(() => {
     if (!groupByType) {
-      return [{ type: 'all' as const, documents, count: documents.length }];
+      // When not grouping, create a single group with a valid DocumentType
+      // We'll use the first document's type or 'invoice' as fallback
+      const firstType = documents.length > 0 ? documents[0].type : 'invoice';
+      return [{ type: firstType, documents, count: documents.length }];
     }
 
     const groups: DocumentGroup[] = [];
@@ -153,7 +156,7 @@ export function DocumentGrid({
         className="space-y-8"
       >
         {groupedDocuments.map((group) => (
-          <motion.div key={group.type} variants={groupVariants}>
+          <motion.div key={group.type} >
             {/* Group Header */}
             {groupByType && (
               <div className="flex items-center justify-between mb-4">
@@ -166,7 +169,7 @@ export function DocumentGrid({
             {/* Document Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {group.documents.map((document) => (
-                <motion.div key={document.id} variants={itemVariants}>
+                <motion.div key={document.id} >
                   <DocumentCard
                     document={document}
                     isSelected={selectedIds.includes(document.id)}
