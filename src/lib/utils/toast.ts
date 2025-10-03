@@ -14,51 +14,35 @@ export interface ToastOptions {
 
 export const showToast = {
   success: (message: string, options?: ToastOptions) => {
-    try {
-      addToast({
+     addToast({
         title: options?.title || 'Success',
         description: options?.description || message,
         color: 'success',
       });
-    } catch (error) {
-      console.log('Success:', message);
-    }
   },
 
   error: (message: string, options?: ToastOptions) => {
-    try {
-      addToast({
+    addToast({
         title: options?.title || 'Error',
         description: options?.description || message,
         color: 'danger',
       });
-    } catch (error) {
-      console.error('Error:', message);
-    }
   },
 
   warning: (message: string, options?: ToastOptions) => {
-    try {
-      addToast({
+  addToast({
         title: options?.title || 'Warning',
         description: options?.description || message,
         color: 'warning',
       });
-    } catch (error) {
-      console.warn('Warning:', message);
-    }
   },
 
   info: (message: string, options?: ToastOptions) => {
-    try {
-      addToast({
+    addToast({
         title: options?.title || 'Info',
         description: options?.description || message,
         color: 'primary',
       });
-    } catch (error) {
-      console.info('Info:', message);
-    }
   },
 };
 
