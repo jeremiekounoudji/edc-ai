@@ -110,7 +110,7 @@ export function ChatArea({
               ) : (
                 <>
                   {/* General Welcome */}
-                  <h1 className="text-2xl mt-6 sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4">
+                  <h1 className="text-2xl mt-[100px]  sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4">
                     Welcome to EDC-AI
                   </h1>
                   <p className="text-base sm:text-lg text-muted-foreground mb-6 sm:mb-8 px-4">
@@ -119,7 +119,7 @@ export function ChatArea({
                   
                   {/* Project Selection Message */}
                   {!selectedProject && (
-                    <div className="bg-muted/50 rounded-lg p-4 mb-6 mx-4">
+                    <div className="bg-muted/50 rounded-lg p-4 my-5 mx-4">
                       <p className="text-sm text-muted-foreground text-center mb-3">
                         To start chatting, please create or select a project
                       </p>
@@ -141,6 +141,7 @@ export function ChatArea({
                       </div>
                     </div>
                   )}
+                 
                   
                   {/* Action Cards Grid for General */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8 px-4">
@@ -223,7 +224,8 @@ export function ChatArea({
       </div>
 
       {/* Floating Input Bar */}
-      {(selectedProject || selectedConversation) && <div className="absolute bottom-0 left-0 right-0 z-40 p-2 sm:p-4 lg:p-6">
+      {/* selectedProject ||  */}
+      {selectedConversation && (<div className="absolute bottom-0 left-0 right-0 z-40 p-2 sm:p-4 lg:p-6">
         <div className="max-w-4xl mx-auto">
           <InputBar
             onSendMessage={onSendMessage}
@@ -240,7 +242,7 @@ export function ChatArea({
             EDC AI Powered by bandesoft Version 1.3.
           </p>
         </div>
-      </div>}
+      </div>)}
       
     </div>
   );

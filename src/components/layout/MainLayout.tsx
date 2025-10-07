@@ -193,7 +193,7 @@ export function MainLayout({
         {/* Main Content */}
         <main className="flex flex-1 overflow-hidden">
           {/* Content Area */}
-          <div className="flex-1 flex flex-col min-w-0">
+          <div className="flex-1 flex flex-col min-w-0 h-screen">
             <TabContent activeTab={activeTab}>
               {children}
             </TabContent>

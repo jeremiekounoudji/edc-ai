@@ -29,7 +29,7 @@ export function TopNavigation({ onUpgradeClick, user, currentTitle = "AI Chat" }
         </div>
 
         {/* Center - Current Section Title */}
-        <div className="flex-1 text-center">
+        <div className="flex-1 text-center hidden md:block">
           <h2 className="text-lg font-medium text-foreground">{currentTitle}</h2>
         </div>
 
