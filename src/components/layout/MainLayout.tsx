@@ -100,7 +100,7 @@ export function MainLayout({
   console.log('isLargeScreen', selectedProjectId);
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-background overflow-hidden">
       {/* Desktop Left Sidebar */}
       <div
         className={`hidden lg:block transition-all duration-300 ease-in-out ${
@@ -193,7 +193,7 @@ export function MainLayout({
         {/* Main Content */}
         <main className="flex flex-1 overflow-hidden">
           {/* Content Area */}
-          <div className="flex-1 flex flex-col min-w-0 h-screen">
+          <div className="flex-1 flex flex-col h-[100vh] min-w-0 ">
             <TabContent activeTab={activeTab}>
               {children}
             </TabContent>

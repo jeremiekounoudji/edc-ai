@@ -232,8 +232,8 @@ export default function DocumentsPage() {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-border">
-        <div>
+      <div className="flex flex-col md:flex-row items-center md:items-start justify-start md:justify-between  p-6 border-b border-border">
+        <div className='p-2'>
           <h1 className="text-2xl font-bold text-foreground">Documents</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Manage and organize your documents
@@ -296,7 +296,7 @@ export default function DocumentsPage() {
             startContent={<FiPlus className="h-4 w-4" />}
             onClick={() => setShowUploadModal(true)}
           >
-            Add Document
+           
           </Button>
         </div>
       </div>

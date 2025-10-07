@@ -49,7 +49,7 @@ export function ChatArea({
   });
 
   return (
-    <div className="flex flex-col h-full relative chat-area-mobile">
+    <div className="flex flex-col h-[80vh] relative chat-area-mobile">
       {/* Conversation Header */}
      {selectedConversation && onBack && (
          <Button
