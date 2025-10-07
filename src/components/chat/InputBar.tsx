@@ -126,7 +126,7 @@ export function InputBar({
             className="w-full resize-none bg-transparent border-0 outline-none text-sm sm:text-base text-left placeholder:text-muted-foreground disabled:opacity-50 py-2 focus:outline-none focus:ring-0 focus:border-0"
             style={{
               minHeight: '40px',
-              maxHeight: '90px',
+              maxHeight: '50px',
               height: 'auto',
               width: '100%',
               display: 'block',
@@ -139,9 +139,9 @@ export function InputBar({
 
           {/* Character Count + Send Button */}
           <div className="flex items-center space-x-2 flex-shrink-0">
-            <span className={`text-xs ${isOverLimit ? 'text-destructive' : 'text-muted-foreground'}`}>
+            {/* <span className={`text-xs ${isOverLimit ? 'text-destructive' : 'text-muted-foreground'}`}>
               {characterCount}/{maxLength}
-            </span>
+            </span> */}
             <Button
               isIconOnly
               variant="solid"

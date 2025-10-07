@@ -15,6 +15,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 
 interface MainLayoutProps {
   children: React.ReactNode;
+  selectedProjectId?: string | null;
   user?: {
     name: string;
     email: string;
@@ -34,6 +35,7 @@ export function MainLayout({
   children,
   user: userProp,
   projects,
+  selectedProjectId,
   onSearch,
   onNavigate,
   onProjectSelect,
@@ -95,6 +97,7 @@ export function MainLayout({
   // if(!isAuthenticated) {
   //   router.push('/auth/login');
   // }
+  console.log('isLargeScreen', selectedProjectId);
 
   return (
     <div className="flex h-screen bg-background">
@@ -197,22 +200,21 @@ export function MainLayout({
           </div>
 
           {/* Desktop Right Sidebar - Only show on AI Chat tab */}
-          {activeTab === 'projects' && (
+          {activeTab === 'projects' && (selectedProjectId ? null : (
             <div
               className={`hidden lg:block transition-all duration-300 ease-in-out ${
                 rightSidebarCollapsed ? 'w-16' : 'w-80'
               }`}
             >
               <RightSidebar
-                isCollapsed={rightSidebarCollapsed}
-                onToggleCollapse={toggleRightSidebar}
-                projects={projects}
-                onProjectSelect={handleProjectSelect}
-                onProjectCreate={onProjectCreate}
-                onProjectLoadMore={onProjectLoadMore}
-              />
+                    selectedProjectId={selectedProjectId}
+                    isCollapsed={rightSidebarCollapsed}
+                    onToggleCollapse={toggleRightSidebar}
+                    projects={projects}
+                    onProjectSelect={handleProjectSelect}
+                  />
             </div>
-          )}
+          ))}
         </main>
       </div>
 
@@ -236,6 +238,7 @@ export function MainLayout({
               </Button>
             </div>
             <RightSidebar
+              selectedProjectId={selectedProjectId}
               isCollapsed={false}
               onToggleCollapse={() => {}}
               projects={projects}

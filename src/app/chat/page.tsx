@@ -75,6 +75,7 @@ export default function ChatPage() {
     <MainLayout 
       onProjectSelect={handleProjectSelect}
       currentTitle={selectedProject?.title || "EDC AI"}
+      selectedProjectId={selectedProject?.id || null}
       
     >
       {selectedProject ? (

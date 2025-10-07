@@ -1,4 +1,6 @@
-import React, { useState, useMemo } from 'react';
+'use client';
+
+import React, { useState, useMemo, useEffect } from 'react';
 import { Button } from '@heroui/button';
 import { Card, CardBody } from '@heroui/card';
 import { Input } from '@heroui/input';
@@ -12,6 +14,7 @@ import { useProjects } from '@/hooks/useProject';
 
 interface RightSidebarProps {
   isCollapsed?: boolean;
+  selectedProjectId?: string | null;
   onToggleCollapse?: () => void;
   projects?: Project[];
   selectedProjects?: string[];
@@ -27,6 +30,7 @@ interface RightSidebarProps {
 export function RightSidebar({
   isCollapsed = false,
   onToggleCollapse,
+  selectedProjectId,
   // projects = [],
   selectedProjects = [],
   onProjectSelect,
@@ -47,6 +51,21 @@ export function RightSidebar({
     position: { x: number; y: number };
   } | null>(null);
 
+  // hide panel on project selected
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+  useEffect(() => {
+    const checkScreen = () => setIsLargeScreen(window.innerWidth >= 1024); // lg breakpoint
+    checkScreen();
+    window.addEventListener("resize", checkScreen);
+    return () => window.removeEventListener("resize", checkScreen);
+  }, []);
+
+  const shouldHideSidebar = isLargeScreen && selectedProjectId; // 👈 key condition
+
+ 
+
+  
   // Default projects for demonstration
   const { projects, isLoading, createProject, isError } = useProjects();
 
@@ -116,6 +135,12 @@ export function RightSidebar({
       setShowAllProjects(true);
     }
   };
+  if (shouldHideSidebar) {
+    console.log('shouldHideSidebar', shouldHideSidebar);
+    console.log('isLargeScreen', selectedProjectId);
+    return <div className="hidden"></div>; // hide sidebar on desktop if project selected
+  }
+
 
   if (isCollapsed) {
     return (
@@ -214,10 +239,15 @@ export function RightSidebar({
         <div className="space-y-2 p-4">
           {filteredProjects.map((project: Project) => (
             <Card
+            onClick={(e) => {
+              console.log('project.id', project.id);
+              e.stopPropagation();
+              handleProjectClick(project.id);
+            }}
               key={project.id}
               isPressable
               className={`cursor-pointer transition-all duration-200 rounded-xl border-2 hover:bg-accent/50 border-transparent hover:border-border hover:shadow-sm w-full project-card-mobile`}
-              onClick={() => handleProjectClick(project.id)}
+              // onClick={() => handleProjectClick(project.id)}
             >
               <CardBody className="p-3 h-24 flex flex-col justify-between w-full">
                 <div className="flex items-start justify-between w-full">
@@ -229,16 +259,7 @@ export function RightSidebar({
                       {truncateText(project.description, 60)}
                     </p>
                   </div>
-                  <Button
-                  
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleProjectMenuClick(e, project);
-                    }}
-                    className="h-6 w-6 min-w-6 opacity-0 group-hover:opacity-100 transition-opacity !flex !items-center !justify-center flex-shrink-0 rounded-lg bg-transparent border-0 hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer"
-                  >
-                    <FiMoreHorizontal className="h-3 w-3" />
-                  </Button>
+                 
                 </div>
                 <p className="text-xs text-muted-foreground mt-auto">
                   {formatRelativeTime(project.updatedAt)}
